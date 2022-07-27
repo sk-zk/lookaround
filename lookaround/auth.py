@@ -7,7 +7,7 @@ import string
 import time
 from urllib.parse import urlparse, quote
 
-import ResourceManifest_pb2
+from lookaround.proto import ResourceManifest_pb2
 
 
 class Authenticator:
