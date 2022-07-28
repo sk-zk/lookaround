@@ -35,7 +35,10 @@ class Authenticator:
         timestamp = int(time.time()) + 4200
         separator = "&" if url_obj.query else "?"
 
-        plaintext = f"{url_obj.path + url_obj.query}{separator}sid={self.session_id}{timestamp}{token_p3}"
+        url_path = url_obj.path
+        if url_obj.query:
+            url_path += "?" + url_obj.query
+        plaintext = f"{url_path}{separator}sid={self.session_id}{timestamp}{token_p3}"
         plaintext_bytes = _pad_pkcs7(plaintext.encode("utf-8"))
         key = hashlib.sha256(token.encode()).digest()
         iv = b"\0" * 16
