@@ -27,14 +27,14 @@ def get_coverage_tile_by_latlon(lat, lon):
 def fetch_pano_segment(panoid, that_other_id, segment, zoom, auth):
     endpoint = "https://gspe72-ssl.ls.apple.com/mnn_us/"
     panoid = str(panoid)
-    if (len(panoid) > 20):
+    if len(panoid) > 20:
         raise ValueError("panoid must not be longer than 20 characters.")
-    if (segment > 5):
+    if segment > 5:
         raise ValueError("Segments range from 0 to 5 inclusive.")
-    
+
     zoom = min(7, zoom)
     panoid_padded = str(panoid).zfill(20)
-    panoid_split =  [panoid_padded[i:i+4] for i in range(0, len(panoid_padded), 4)]
+    panoid_split = [panoid_padded[i:i + 4] for i in range(0, len(panoid_padded), 4)]
     panoid_url = "/".join(panoid_split)
     url = endpoint + f"{panoid_url}/{that_other_id}/t/{segment}/{zoom}"
     url = auth.authenticate_url(url)
@@ -45,8 +45,8 @@ def fetch_pano_segment(panoid, that_other_id, segment, zoom, auth):
         raise Exception(str(response))
 
 
-
 TILE_SIZE = 256
+
 
 def wgs84_to_tile_coord(lat, lon, zoom):
     scale = 1 << zoom
