@@ -17,8 +17,8 @@ message MapTile {
     Unknown5 unknown5 = 12;
     
     message Unknown4 {
-      int32 unknown6 = 1;
-      int32 unknown7 = 2;
+      int32 longitude_offset = 1;
+      int32 latitude_offset = 2;
       int32 unknown8 = 3;
       int32 unknown9 = 4;
       int32 unknown10 = 5;

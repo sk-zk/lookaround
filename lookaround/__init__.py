@@ -1,11 +1,37 @@
-import math
+from datetime import datetime
 import requests
 
 from lookaround.proto import MapTile_pb2
 from .auth import Authenticator
+import lookaround.geo
+from .panorama import LookaroundPanorama
+
+
+def get_coverage_tile_by_latlon(lat, lon):
+    x, y = geo.wgs84_to_tile_coord(lat, lon, 17)
+    return get_coverage_tile(x, y)
 
 
 def get_coverage_tile(tile_x, tile_y):
+    tile = _get_coverage_tile_raw(tile_x, tile_y)
+    panos = []
+    for pano in tile.pano:
+        lat, lon = geo.get_latlon_from_protobuf_pano(
+            pano.unknown4.longitude_offset,
+            pano.unknown4.latitude_offset,
+            tile_x,
+            tile_y)
+        pano_obj = LookaroundPanorama(
+            pano.panoid,
+            tile.unknown13.last_part_of_pano_url,
+            lat,
+            lon)
+        pano_obj.date = datetime.fromtimestamp(int(pano.timestamp) / 1000.0)
+        panos.append(pano_obj)
+    return panos
+
+
+def _get_coverage_tile_raw(tile_x, tile_y):
     headers = {
         "maps-tile-style": "style=57&size=2&scale=0&v=0&preflight=2",
         "maps-tile-x": str(tile_x),
@@ -17,11 +43,6 @@ def get_coverage_tile(tile_x, tile_y):
     tile = MapTile_pb2.MapTile()
     tile.ParseFromString(response.content)
     return tile
-
-
-def get_coverage_tile_by_latlon(lat, lon):
-    x, y = wgs84_to_tile_coord(lat, lon, 17)
-    return get_coverage_tile(x, y)
 
 
 def fetch_pano_segment(panoid, that_other_id, segment, zoom, auth):
@@ -43,23 +64,3 @@ def fetch_pano_segment(panoid, that_other_id, segment, zoom, auth):
         return response.content
     else:
         raise Exception(str(response))
-
-
-TILE_SIZE = 256
-
-
-def wgs84_to_tile_coord(lat, lon, zoom):
-    scale = 1 << zoom
-    world_coord = wgs84_to_mercator(lat, lon)
-    pixel_coord = (math.floor(world_coord[0] * scale), math.floor(world_coord[1] * scale))
-    tile_coord = (math.floor((world_coord[0] * scale) / TILE_SIZE), math.floor((world_coord[1] * scale) / TILE_SIZE))
-    return tile_coord
-
-
-def wgs84_to_mercator(lat, lon):
-    siny = math.sin((lat * math.pi) / 180.0)
-    siny = min(max(siny, -0.9999), 0.9999)
-    return (
-        TILE_SIZE * (0.5 + lon / 360.0),
-        TILE_SIZE * (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi))
-    )
