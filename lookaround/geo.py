@@ -4,7 +4,7 @@ import math
 TILE_SIZE = 256
 
 
-def get_latlon_from_protobuf_pano(x_offset, y_offset, tile_x, tile_y):
+def protobuf_tile_offset_to_wgs84(x_offset, y_offset, tile_x, tile_y):
     """
     Calculates the absolute position of a pano from the tile offsets returned by the API.
     :param x_offset: The X coordinate of the raw tile offset returned by the API.

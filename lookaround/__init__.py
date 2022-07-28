@@ -16,7 +16,7 @@ def get_coverage_tile(tile_x, tile_y):
     tile = _get_coverage_tile_raw(tile_x, tile_y)
     panos = []
     for pano in tile.pano:
-        lat, lon = geo.get_latlon_from_protobuf_pano(
+        lat, lon = geo.protobuf_tile_offset_to_wgs84(
             pano.unknown4.longitude_offset,
             pano.unknown4.latitude_offset,
             tile_x,
