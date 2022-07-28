@@ -9,6 +9,9 @@ from urllib.parse import urlparse, quote
 
 from lookaround.proto import ResourceManifest_pb2
 
+# based on https://github.com/retroplasma/flyover-reverse-engineering
+# MIT(?)
+
 
 class Authenticator:
     TOKEN_P1 = "4cjLaD4jGRwlQ9U"
