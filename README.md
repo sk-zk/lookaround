@@ -12,7 +12,7 @@ print(len(panos))
 print(panos[0].panoid)
 print(panos[0].region_id)  # I have no idea what this actually is, but it's
                            # a secondary key required for downloading images
-                           # which appears stays the same for a large region,
+                           # which appears to stay the same for a large region,
                            # so I'm calling it a region_id for now
 print(panos[0].lat, panos[0].lon)
 print(panos[0].date)
