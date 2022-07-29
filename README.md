@@ -1,4 +1,4 @@
-In which I attempt to reverse engineer Apple Look Around.
+In which I reverse-engineer Apple Look Around and create a Python module for it.
 
 ## Coverage tiles
 Panoramas can be found as XYZ tiles with z=17. I've abstracted this a bit for convenience:
@@ -10,16 +10,18 @@ from lookaround import get_coverage_tile_by_latlon
 panos = get_coverage_tile_by_latlon(49.49277003930681, 6.588420315065048)
 print(len(panos))
 print(panos[0].panoid)
-print(panos[0].region_id)  # not sure what this actually is, but it's
-                           # required for downloading images, and it's the same for
-                           # each pano on a tile, for many tiles within a region,
-                           # so "region_id" it is
+print(panos[0].region_id)  # I have no idea what this actually is, but it's
+                           # a secondary key required for downloading images
+                           # which appears stays the same for a large region,
+                           # so I'm calling it a region_id for now
 print(panos[0].lat, panos[0].lon)
 print(panos[0].date)
 ```
 
+Alternatively, if you've got tile coordinates already, you can call `get_coverage_tile` instead.
+
 ## Authentication
-Requests for the actual image data must be authenticated.
+Requests for the actual image data and some (but not all) map tile types must be authenticated.
 The code for this is a translation of [retroplasma/flyover-reverse-engineering](https://github.com/retroplasma/flyover-reverse-engineering) (without which
 none of this would've been possible).
 
