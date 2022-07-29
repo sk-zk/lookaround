@@ -34,7 +34,7 @@ message MapTile {
     int32 unknown14 = 1;
     // this is the param that appears in pano URLs after the pano ID. 
     // no idea what this does exactly.
-    int32 last_part_of_pano_url = 3; 
+    int32 region_id = 3;
     int32 unknown15 = 4;
     int32 unknown16 = 5;
     int32 unknown17 = 6;

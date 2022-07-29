@@ -23,7 +23,7 @@ def get_coverage_tile(tile_x, tile_y):
             tile_y)
         pano_obj = LookaroundPanorama(
             pano.panoid,
-            tile.unknown13.last_part_of_pano_url,
+            tile.unknown13.region_id,
             lat,
             lon)
         pano_obj.date = datetime.fromtimestamp(int(pano.timestamp) / 1000.0)
