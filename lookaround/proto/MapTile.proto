@@ -3,7 +3,7 @@ package streetlevel;
 
 message MapTile {
   repeated Pano pano = 1;
-  Unknown13 unknown13 = 4;
+  repeated Unknown13 unknown13 = 4;
   repeated Unknown22 unknown22 = 5;
   TileCoordinate tileCoordinate = 6;
   

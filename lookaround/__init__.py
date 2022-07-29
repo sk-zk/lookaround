@@ -23,9 +23,9 @@ def get_coverage_tile(tile_x, tile_y):
             tile_y)
         pano_obj = LookaroundPanorama(
             pano.panoid,
-            tile.unknown13.region_id,
-            lat,
-            lon)
+            tile.unknown13[0].region_id,  # a response can contain more than one `unknown13` message,
+                                          # but it seems that only the first one contains the id we're after
+            lat, lon)
         pano_obj.date = datetime.fromtimestamp(int(pano.timestamp) / 1000.0)
         panos.append(pano_obj)
     return panos
