@@ -11,7 +11,7 @@ message MapTile {
     uint64 panoid = 1;
     int32 unknown1 = 4;
     int64 timestamp = 5; // time the pano was taken
-    int32 unknown2 = 7;
+    int32 region_id_idx = 7;
     repeated int32 unknown3 = 9; // goes from 0 to 5. available sizes maybe?
     Unknown4 unknown4 = 10;
     Unknown5 unknown5 = 12;
