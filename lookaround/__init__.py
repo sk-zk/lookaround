@@ -45,19 +45,26 @@ def _get_coverage_tile_raw(tile_x, tile_y):
     return tile
 
 
-def fetch_pano_segment(panoid, that_other_id, segment, zoom, auth):
+def fetch_pano_segment(panoid, region_id, segment, zoom, auth):
     endpoint = "https://gspe72-ssl.ls.apple.com/mnn_us/"
     panoid = str(panoid)
+    region_id = str(region_id)
     if len(panoid) > 20:
-        raise ValueError("panoid must not be longer than 20 characters.")
+        raise ValueError("panoid must not be longer than 20 digits.")
+    if len(region_id) > 10:
+        raise ValueError("region_id must not be longer than 10 digits.")
     if segment > 5:
         raise ValueError("Segments range from 0 to 5 inclusive.")
 
     zoom = min(7, zoom)
-    panoid_padded = str(panoid).zfill(20)
+
+    panoid_padded = panoid.zfill(20)
     panoid_split = [panoid_padded[i:i + 4] for i in range(0, len(panoid_padded), 4)]
     panoid_url = "/".join(panoid_split)
-    url = endpoint + f"{panoid_url}/{that_other_id}/t/{segment}/{zoom}"
+
+    region_id_padded = region_id.zfill(10)
+
+    url = endpoint + f"{panoid_url}/{region_id_padded}/t/{segment}/{zoom}"
     url = auth.authenticate_url(url)
     response = requests.get(url)
     if response.ok:
