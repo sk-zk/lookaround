@@ -4,19 +4,29 @@ package streetlevel;
 message MapTile {
   repeated Pano pano = 1;
   repeated Unknown13 unknown13 = 4;
-  repeated Unknown22 unknown22 = 5;
-  TileCoordinate tileCoordinate = 6;
+  repeated Projection projection = 5;
+  TileCoordinate tile_coordinate = 6;
   
   message Pano {
+    // the pano id, a number with up to 20 digits
     uint64 panoid = 1;
+
     int32 unknown1 = 4;
-    int64 timestamp = 5; // time the pano was taken
+
+    // capture date and time of the pano as unix timestamp (in milliseconds)
+    int64 timestamp = 5;
+
+    // index of the `Unknown13` message which holds the region id for this pano
     int32 region_id_idx = 7;
-    repeated int32 unknown3 = 9; // goes from 0 to 5. available sizes maybe?
+
+    // always 0 to 5; potentially indices for the face projection data below
+    repeated int32 unknown3 = 9;
+
     Unknown4 unknown4 = 10;
     Unknown5 unknown5 = 12;
     
     message Unknown4 {
+      // the tile coordinates of the pano, from which the lat/lon is calculated.
       int32 longitude_offset = 1;
       int32 latitude_offset = 2;
       int32 unknown8 = 3;
@@ -26,6 +36,7 @@ message MapTile {
     }
     
     message Unknown5 {
+      // always four of these. used values are 0, 1, 8, or 9.
       repeated int32 unknown12 = 1;
     }
   }
@@ -44,16 +55,16 @@ message MapTile {
     int32 unknown21 = 12;
   }
   
-  message Unknown22 {
-    int32 unknown23 = 1;
+  message Projection {
+    int32 face = 1;
     Unknown24 unknown24 = 4;
     Unknown25 unknown25 = 5;
     int32 unknown26 = 6;
 
     message Unknown24 {
       int32 unknown27 = 1;
-      double unknown28 = 2;
-      double unknown29 = 3;
+      double longitude_size = 2;
+      double latitude_size = 3;
       double unknown30 = 4;
       double unknown31 = 5;
       double unknown32 = 6;
@@ -67,7 +78,7 @@ message MapTile {
       double unknown37 = 1;
       double unknown38 = 2;
       double unknown39 = 3;
-      double unknown40 = 4;
+      double longitude_center = 4;
       double unknown41 = 5;
       double unknown42 = 6;
     }
