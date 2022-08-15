@@ -36,7 +36,7 @@ message MapTile {
     }
     
     message Unknown5 {
-      // always four of these. used values are 0, 1, 8, or 9.
+      // always four of these if they appear. values range from 0 to 64.
       repeated int32 unknown12 = 1;
     }
   }
