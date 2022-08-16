@@ -6,6 +6,8 @@ class LookaroundPanorama:
         self.lon = lon
 
         self.date = None
+        
+        self.heading = None
 
     def __repr__(self):
         return str(self)
