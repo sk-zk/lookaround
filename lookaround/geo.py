@@ -48,3 +48,53 @@ def tile_coord_to_wgs84(x, y, zoom):
     world_coord = (pixel_coord[0] / scale, pixel_coord[1] / scale)
     lat_lon = mercator_to_wgs84(world_coord[0], world_coord[1])
     return lat_lon
+
+
+'''
+Approximate heading of the panorama, assuming the POV is facing 
+to the left of the Apple Car in cthe direction of driving.
+'''
+def heading_from_unkown10_unknown11(unknown10, unknown11):
+    # Whatever is the logic behind this? 
+    # Who at Apple thought of these values? 
+
+    # TODO: Finetune these values
+    # unknown10
+    # These are the extreme values of unkown10 I have observed in a random selection of about 1000 tiles.
+    # The values are in two clusters. 
+    # In the range [1,2159] you're looking more west than east.
+    # In the range [14318,16383] you're looking more east than west.
+    westmin = 1
+    westmax = 2159
+    eastmin = 16383 # looking (north/south) and very slightly east
+    eastmax = 14318 # looking slightly (north/south) directly east
+
+    # unknown11
+    # This is slightly more speculative
+    northmin = 8204 # this is likely lower
+    northmax = 6054
+    southmin = 8204 # this is likely lower
+    southmax = 10173
+
+
+    ew=0
+    if unknown10 < westmax:
+        # Looking west
+        ew = -(float(unknown10 - westmin) / float(westmax - westmin))
+    elif unknown10 > eastmax:
+        # Looking east
+        ew = (float(unknown10 - eastmin) / float(eastmax - eastmin))
+
+    ns=0
+    if unknown11 <= northmin:
+        # Looking north
+        ns = (float(unknown11 - northmin) / float(northmax - northmin))
+    else:
+        ns = -(float(unknown11 - southmin) / float(southmax - southmin))
+
+
+    print(ns,ew)
+    r =  math.degrees(math.atan2(ew,ns))
+    if r < 0:
+        r += 360
+    return r
