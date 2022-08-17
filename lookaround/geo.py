@@ -52,7 +52,7 @@ def tile_coord_to_wgs84(x, y, zoom):
 
 '''
 Approximate heading of the panorama, assuming the POV is facing 
-to the left of the Apple Car in cthe direction of driving.
+ahead of the Apple Car in the direction of driving.
 '''
 def heading_from_unkown10_unknown11(unknown10, unknown11):
     # Whatever is the logic behind this? 
@@ -97,4 +97,10 @@ def heading_from_unkown10_unknown11(unknown10, unknown11):
     r =  math.degrees(math.atan2(ew,ns))
     if r < 0:
         r += 360
+
+    # Adjust to match the heading the Apple Car is driving in.
+    r += 90
+    if r > 360:
+        r -= 360
+    
     return r
