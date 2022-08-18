@@ -7,13 +7,13 @@ import lookaround.geo
 from .panorama import LookaroundPanorama
 
 
-def get_coverage_tile_by_latlon(lat, lon):
+def get_coverage_tile_by_latlon(lat, lon, session=None):
     x, y = geo.wgs84_to_tile_coord(lat, lon, 17)
-    return get_coverage_tile(x, y)
+    return get_coverage_tile(x, y, session=session)
 
 
-def get_coverage_tile(tile_x, tile_y):
-    tile = _get_coverage_tile_raw(tile_x, tile_y)
+def get_coverage_tile(tile_x, tile_y, session=None):
+    tile = _get_coverage_tile_raw(tile_x, tile_y, session=session)
     panos = []
     for pano in tile.pano:
         lat, lon = geo.protobuf_tile_offset_to_wgs84(
@@ -31,7 +31,7 @@ def get_coverage_tile(tile_x, tile_y):
     return panos
 
 
-def _get_coverage_tile_raw(tile_x, tile_y):
+def _get_coverage_tile_raw(tile_x, tile_y, session=None):
     headers = {
         "maps-tile-style": "style=57&size=2&scale=0&v=0&preflight=2",
         "maps-tile-x": str(tile_x),
@@ -39,13 +39,17 @@ def _get_coverage_tile_raw(tile_x, tile_y):
         "maps-tile-z": "17",
         "maps-auth-token": "w31CPGRO/n7BsFPh8X7kZnFG0LDj9pAuR8nTtH3xhH8=",
     }
-    response = requests.get("https://gspe76-ssl.ls.apple.com/api/tile?", headers=headers)
+    url = "https://gspe76-ssl.ls.apple.com/api/tile?"
+    if session:
+        response = session.get(url, headers=headers)
+    else:
+        response = requests.get(url, headers=headers)
     tile = MapTile_pb2.MapTile()
     tile.ParseFromString(response.content)
     return tile
 
 
-def get_pano_face(panoid, region_id, face, zoom, auth):
+def get_pano_face(panoid, region_id, face, zoom, auth, session=None):
     endpoint = "https://gspe72-ssl.ls.apple.com/mnn_us/"
     panoid = str(panoid)
     region_id = str(region_id)
@@ -66,7 +70,11 @@ def get_pano_face(panoid, region_id, face, zoom, auth):
 
     url = endpoint + f"{panoid_url}/{region_id_padded}/t/{face}/{zoom}"
     url = auth.authenticate_url(url)
-    response = requests.get(url)
+    if session:
+        response = session.get(url)
+    else:
+        response = requests.get(url)
+        
     if response.ok:
         return response.content
     else:
