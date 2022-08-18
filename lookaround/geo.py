@@ -2,19 +2,19 @@ import math
 
 TILE_SIZE = 256
 
-def get_north_offset(unknown10, unknown11):
+def get_north_offset(north_x, north_y):
     """
     Calculates the longitude in the panorama which faces north.
     """
-    MAX_UNKNOWN_10 = 16384
-    UNKNOWN_11_MID = 8192
+    MAX_NORTH_X = 16384
+    NORTH_Y_MID = 8192
 
-    if unknown10 >= 10000:
-        unknown10 -= MAX_UNKNOWN_10
+    if north_x >= 10000:
+        north_x -= MAX_NORTH_X
 
-    unknown11 -= UNKNOWN_11_MID
+    north_y -= NORTH_Y_MID
 
-    rad = math.atan2(unknown10, -unknown11) + 1.5 * math.pi
+    rad = math.atan2(north_x, -north_y) + 1.5 * math.pi
     rad %= (2 * math.pi)
 
     return rad

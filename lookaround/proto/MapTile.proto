@@ -22,17 +22,17 @@ message MapTile {
     // always 0 to 5; potentially indices for the face projection data below
     repeated int32 unknown3 = 9;
 
-    Unknown4 unknown4 = 10;
+    Location location = 10;
     Unknown5 unknown5 = 12;
     
-    message Unknown4 {
+    message Location {
       // the tile coordinates of the pano, from which the lat/lon is calculated.
       int32 longitude_offset = 1;
       int32 latitude_offset = 2;
       int32 unknown8 = 3;
       int32 unknown9 = 4;
-      int32 unknown10 = 5;
-      int32 unknown11 = 6;
+      int32 north_x = 5;
+      int32 north_y = 6;
     }
     
     message Unknown5 {

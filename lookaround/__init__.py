@@ -17,15 +17,15 @@ def get_coverage_tile(tile_x, tile_y):
     panos = []
     for pano in tile.pano:
         lat, lon = geo.protobuf_tile_offset_to_wgs84(
-            pano.unknown4.longitude_offset,
-            pano.unknown4.latitude_offset,
+            pano.location.longitude_offset,
+            pano.location.latitude_offset,
             tile_x,
             tile_y)
         pano_obj = LookaroundPanorama(
             pano.panoid,
             tile.unknown13[pano.region_id_idx].region_id,
             lat, lon,
-            geo.get_north_offset(pano.unknown4.unknown10, pano.unknown4.unknown11))
+            geo.get_north_offset(pano.location.north_x, pano.location.north_y))
         pano_obj.date = datetime.fromtimestamp(int(pano.timestamp) / 1000.0)
         panos.append(pano_obj)
     return panos
