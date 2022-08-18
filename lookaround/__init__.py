@@ -24,9 +24,9 @@ def get_coverage_tile(tile_x, tile_y):
         pano_obj = LookaroundPanorama(
             pano.panoid,
             tile.unknown13[pano.region_id_idx].region_id,
-            lat, lon)
+            lat, lon,
+            geo.get_north_offset(pano.unknown4.unknown10, pano.unknown4.unknown11))
         pano_obj.date = datetime.fromtimestamp(int(pano.timestamp) / 1000.0)
-        pano_obj.heading = [pano.unknown4.unknown8, pano.unknown4.unknown9, pano.unknown4.unknown10, pano.unknown4.unknown11]
         panos.append(pano_obj)
     return panos
 

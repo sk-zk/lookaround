@@ -1,7 +1,23 @@
 import math
 
-
 TILE_SIZE = 256
+
+def get_north_offset(unknown10, unknown11):
+    """
+    Calculates the longitude in the panorama which faces north.
+    """
+    MAX_UNKNOWN_10 = 16384
+    UNKNOWN_11_MID = 8192
+
+    if unknown10 >= 10000:
+        unknown10 -= MAX_UNKNOWN_10
+
+    unknown11 -= UNKNOWN_11_MID
+
+    rad = math.atan2(unknown10, -unknown11) + 1.5 * math.pi
+    rad %= (2 * math.pi)
+
+    return rad
 
 
 def protobuf_tile_offset_to_wgs84(x_offset, y_offset, tile_x, tile_y):
