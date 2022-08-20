@@ -29,7 +29,18 @@ message MapTile {
       // the tile coordinates of the pano, from which the lat/lon is calculated.
       int32 longitude_offset = 1;
       int32 latitude_offset = 2;
-      int32 unknown8 = 3;
+      
+      // this encodes the elevation in some way I don't fully understand.
+      // sea level is ca. 5966 in Edinburgh, 4080 in Flensburg, 5642 in Dublin, -799 in Vancouver,
+      // 3982 in Montpellier, 3723 in Venice, 3653 in Bari, 2850 in Syracuse, -2103 in NYC, 3642 in Málaga, 
+      // 3172 in Gibraltar, -1941 in San Diego, -1467 in Miami, 1937 in Sydney, 677 in Melbourne,
+      // 1248 in Wellington, 55 in Hobart, 1562 in Nelson, 1231 in Christchurch, 584 in Invercargill.
+      // in other words, it's apparently descending based on latitude, but it's different on each
+      // landmass as well?? 
+      // why couldn't you just return it in meters like a normal person? i'm not a GIS nerd damnit, 
+      // I don't have every EPSG code memorized.
+      int32 elevation = 3;
+      
       int32 unknown9 = 4;
       int32 north_x = 5;
       int32 north_y = 6;

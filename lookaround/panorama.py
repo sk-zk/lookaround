@@ -6,6 +6,7 @@ class LookaroundPanorama:
         self.lon = lon
         self.north = north
 
+        self.rawElevation = None
         self.date = None
 
     def __repr__(self):
