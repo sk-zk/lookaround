@@ -2,12 +2,10 @@ import base64
 from Crypto.Cipher import AES
 import hashlib
 import random
-import requests
 import string
 import time
 from urllib.parse import urlparse, quote
 
-from lookaround.proto import ResourceManifest_pb2
 
 # based on https://github.com/retroplasma/flyover-reverse-engineering
 # MIT(?)
@@ -15,26 +13,16 @@ from lookaround.proto import ResourceManifest_pb2
 
 class Authenticator:
     TOKEN_P1 = "4cjLaD4jGRwlQ9U"
-    MANIFEST_URL = "https://gspe35-ssl.ls.apple.com/geo_manifest/dynamic/config?application=geod" \
-                   "&application_version=1&country_code=US&hardware=MacBookPro11,2&os=osx" \
-                   "&os_build=20B29&os_version=11.0.1"
+    TOKEN_P2 = "72xIzEBe0vHBmf9"
 
     def __init__(self):
-        self.token_p2 = None
-        self.resource_manifest = None
-        self.session_id = None
-        self.refresh_credentials()
-
-    def refresh_credentials(self):
         self.session_id = _generate_session_id()
-        self.resource_manifest = self._get_resource_manifest()
-        self.token_p2 = self.resource_manifest.token_p2
 
     def authenticate_url(self, url):
         url_obj = urlparse(url)
 
         token_p3 = _generate_token_p3()
-        token = self.TOKEN_P1 + self.token_p2 + token_p3
+        token = self.TOKEN_P1 + self.TOKEN_P2 + token_p3
         timestamp = int(time.time()) + 4200
         separator = "&" if url_obj.query else "?"
 
@@ -52,12 +40,6 @@ class Authenticator:
         access_key = f"{timestamp}_{token_p3}_{ciphertext_url}"
         final = f"{url}{separator}sid={self.session_id}&accessKey={access_key}"
         return final
-
-    def _get_resource_manifest(self):
-        response = requests.get(self.MANIFEST_URL)
-        manifest = ResourceManifest_pb2.ResourceManifest()
-        manifest.ParseFromString(response.content)
-        return manifest
 
 
 def _generate_session_id():
