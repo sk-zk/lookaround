@@ -27,7 +27,8 @@ def get_coverage_tile(tile_x, tile_y, session=None):
             lat, lon,
             geo.get_north_offset(pano.location.north_x, pano.location.north_y))
         pano_obj.date = datetime.fromtimestamp(int(pano.timestamp) / 1000.0)
-        pano_obj.rawElevation = pano.location.elevation
+        pano_obj.raw_elevation = pano.location.elevation
+        pano_obj.coverage_type = tile.unknown13[pano.region_id_idx].coverage_type
         panos.append(pano_obj)
     return panos
 

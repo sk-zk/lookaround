@@ -59,11 +59,17 @@ message MapTile {
     int32 region_id = 3;
     int32 unknown15 = 4;
     int32 unknown16 = 5;
-    int32 unknown17 = 6;
+    CoverageType coverage_type = 6;
     int32 unknown18 = 9;
     int32 unknown19 = 10;
     int32 unknown20 = 11;
     int32 unknown21 = 12;
+    
+    enum CoverageType {
+      _ = 0;
+      CAR = 2;
+      TREKKER = 3;
+    }
   }
   
   message Projection {
