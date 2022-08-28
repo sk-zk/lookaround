@@ -19,8 +19,8 @@ message MapTile {
     // index of the `Unknown13` message which holds the region id for this pano
     int32 region_id_idx = 7;
 
-    // always 0 to 5; potentially indices for the face projection data below
-    repeated int32 unknown3 = 9;
+    // indices for the projection parameters below
+    repeated int32 projection_idx = 9;
 
     Location location = 10;
     Unknown5 unknown5 = 12;
