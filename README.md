@@ -37,7 +37,7 @@ url = auth.authenticate_url("https://gspe72-ssl.ls.apple.com/mnn_us/0665/1337/76
 Now that we can find panoramas and authenticate our download requests, let's go download one.
 
 Panoramas are made of six faces; four side faces (0-3) and a top (4) and bottom (5) face.
-Each face can be downloaded in seven different resolutions, where 0 is the largest and 7 is the smallest.
+Each face can be downloaded in eight different resolutions, where 0 is the largest and 7 is the smallest.
 
 ```python
 from lookaround import get_coverage_tile_by_latlon, get_pano_face
