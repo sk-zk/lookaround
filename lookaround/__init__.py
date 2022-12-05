@@ -21,7 +21,7 @@ def get_coverage_tile(tile_x, tile_y, session=None):
             pano.location.latitude_offset,
             tile_x,
             tile_y)
-        heading = geo.convert_heading(lon, pano.location.heading)
+        heading = geo.convert_heading(lat, lon, pano.location.heading)
         projection = [
             {
                 "longitude_size": tile.projection[x].unknown24.longitude_size,

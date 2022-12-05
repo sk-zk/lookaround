@@ -2,12 +2,15 @@ import math
 
 TILE_SIZE = 256
 
-def convert_heading(longitude, raw_heading):
+def convert_heading(latitude, longitude, raw_heading):
     """
     Converts the raw heading from the API to degrees.
     """
     offset_factor = 1/(16384/360)
     heading = (offset_factor * raw_heading) - longitude
+    # in the southern hemisphere, the heading also needs to be mirrored across the 90°/270° line
+    if (latitude < 0):
+        heading = -(heading - 90) + 90
     return math.radians(heading)
 
 
