@@ -1,5 +1,8 @@
 In which I reverse-engineer Apple Look Around and create a Python module for it.
 
+## Recent breaking changes
+* `LookaroundPanorama.north` has been renamed to `LookaroundPanorama.heading`.
+
 ## Coverage tiles
 Panoramas can be found as XYZ tiles with z=17. I've abstracted this a bit for convenience:
 
