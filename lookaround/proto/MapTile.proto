@@ -41,9 +41,13 @@ message MapTile {
       // I don't have every EPSG code memorized.
       int32 elevation = 3;
       
-      int32 unknown9 = 4;
-      int32 north_x = 5;
-      int32 north_y = 6;
+      // heading of the car; north is 0 and it goes around CCW from there.
+      // for some reason this has an offset based on the current longitude applied to it.
+      // see convert_heading() in geo.py for the formula.
+      int32 heading = 4;
+
+      int32 unknown10 = 5;
+      int32 unknown11 = 6;
     }
     
     message Unknown5 {

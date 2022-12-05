@@ -1,10 +1,10 @@
 class LookaroundPanorama:
-    def __init__(self, panoid, region_id, lat, lon, north, projection):
+    def __init__(self, panoid, region_id, lat, lon, heading, projection):
         self.panoid = panoid
         self.region_id = region_id
         self.lat = lat
         self.lon = lon
-        self.north = north
+        self.heading = heading
         self.projection = projection
 
         self.raw_elevation = None

@@ -2,22 +2,13 @@ import math
 
 TILE_SIZE = 256
 
-def get_north_offset(north_x, north_y):
+def convert_heading(longitude, raw_heading):
     """
-    Calculates the longitude in the panorama which faces north.
+    Converts the raw heading from the API to degrees.
     """
-    MAX_NORTH_X = 16384
-    NORTH_Y_MID = 8192
-
-    if north_x >= 10000:
-        north_x -= MAX_NORTH_X
-
-    north_y -= NORTH_Y_MID
-
-    rad = math.atan2(north_x, -north_y) + 1.5 * math.pi
-    rad %= (2 * math.pi)
-
-    return rad
+    offset_factor = 1/(16384/360)
+    heading = (offset_factor * raw_heading) - longitude
+    return math.radians(heading)
 
 
 def protobuf_tile_offset_to_wgs84(x_offset, y_offset, tile_x, tile_y):
