@@ -46,7 +46,10 @@ message MapTile {
       // see convert_heading() in geo.py for the formula.
       int32 heading = 4;
 
+      // Probably tilt
       int32 unknown10 = 5;
+      
+      // Probably roll
       int32 unknown11 = 6;
     }
     
