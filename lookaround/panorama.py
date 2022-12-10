@@ -9,6 +9,7 @@ class LookaroundPanorama:
 
         self.raw_elevation = None
         self.coverage_type = None
+        self.timestamp = None
         self.date = None
 
     def __repr__(self):

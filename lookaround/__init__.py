@@ -33,6 +33,7 @@ def get_coverage_tile(tile_x, tile_y, session=None):
             pano.panoid,
             tile.unknown13[pano.region_id_idx].region_id,
             lat, lon, heading, projection)
+        pano_obj.timestamp = pano.timestamp
         pano_obj.date = datetime.fromtimestamp(int(pano.timestamp) / 1000.0)
         pano_obj.raw_elevation = pano.location.elevation
         pano_obj.coverage_type = tile.unknown13[pano.region_id_idx].coverage_type
