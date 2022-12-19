@@ -22,13 +22,7 @@ def get_coverage_tile(tile_x, tile_y, session=None):
             tile_x,
             tile_y)
         heading = geo.convert_heading(lat, lon, pano.location.heading)
-        projection = [
-            {
-                "longitude_size": tile.projection[x].unknown24.longitude_size,
-                "latitude_size": tile.projection[x].unknown24.latitude_size,
-                "longitude_center": tile.projection[x].unknown25.longitude_center
-            } for x in pano.projection_idx
-        ]
+        projection = [tile.projection[x] for x in pano.projection_idx]
         pano_obj = LookaroundPanorama(
             pano.panoid,
             tile.unknown13[pano.region_id_idx].region_id,
