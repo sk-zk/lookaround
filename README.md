@@ -1,8 +1,5 @@
 In which I reverse-engineer Apple Look Around and create a Python module for it.
 
-## Recent breaking changes
-* `LookaroundPanorama.projection` now returns the raw projection parameters from the protobuf response.
-
 ## Coverage tiles
 Panoramas can be found as XYZ tiles with z=17. I've abstracted this a bit for convenience:
 
@@ -47,7 +44,7 @@ Each face can be downloaded in eight different resolutions, where 0 is the large
 from lookaround import get_coverage_tile_by_latlon, get_pano_face
 from lookaround.auth import Authenticator
 
-panos = get_coverage_tile_by_latlon(49.49277003930681, 6.588420315065048)
+panos = get_coverage_tile_by_latlon(46.52943, 10.45544)
 auth = Authenticator()
 zoom = 2
 for face in range(0, 6):
