@@ -7,7 +7,7 @@ Panoramas can be found as XYZ tiles with z=17. I've abstracted this a bit for co
 from lookaround import get_coverage_tile_by_latlon
 
 # fetches all panoramas on the tile which contains this coordinate
-panos = get_coverage_tile_by_latlon(49.49277003930681, 6.588420315065048)
+panos = get_coverage_tile_by_latlon(46.52943, 10.45544)
 print(len(panos))
 print(panos[0].panoid)
 print(panos[0].region_id)  # I have no idea what this actually is, but it's
