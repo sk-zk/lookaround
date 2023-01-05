@@ -45,6 +45,7 @@ from lookaround import get_coverage_tile_by_latlon, get_pano_face
 from lookaround.auth import Authenticator
 
 panos = get_coverage_tile_by_latlon(46.52943, 10.45544)
+
 auth = Authenticator()
 zoom = 2
 for face in range(0, 6):
