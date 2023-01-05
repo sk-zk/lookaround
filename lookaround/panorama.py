@@ -1,16 +1,22 @@
-class LookaroundPanorama:
-    def __init__(self, panoid, region_id, lat, lon, heading, projection):
-        self.panoid = panoid
-        self.region_id = region_id
-        self.lat = lat
-        self.lon = lon
-        self.heading = heading
-        self.projection = projection
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Any
 
-        self.raw_elevation = None
-        self.coverage_type = None
-        self.timestamp = None
-        self.date = None
+@dataclass
+class LookaroundPanorama:
+    panoid: int
+    region_id: int
+    lat: float 
+    lon: float 
+    heading: float = None
+    projection: Any = None
+    raw_elevation: int = None
+    coverage_type: int = None
+    timestamp: int = None
+
+    @property
+    def date(self):
+        return datetime.fromtimestamp(int(self.timestamp) / 1000.0)
 
     def __repr__(self):
         return str(self)
