@@ -1,6 +1,8 @@
 syntax = "proto3";
 package streetlevel;
 
+// Reverse-engineered identifiers for the coverage tile message.
+
 message MapTile {
   repeated Pano pano = 1;
   repeated Unknown13 unknown13 = 4;
@@ -30,15 +32,9 @@ message MapTile {
       int32 longitude_offset = 1;
       int32 latitude_offset = 2;
       
-      // this encodes the elevation in some way I don't fully understand.
-      // sea level is ca. 5966 in Edinburgh, 4080 in Flensburg, 5642 in Dublin, -799 in Vancouver,
-      // 3982 in Montpellier, 3723 in Venice, 3653 in Bari, 2850 in Syracuse, -2103 in NYC, 3642 in Málaga, 
-      // 3172 in Gibraltar, -1941 in San Diego, -1467 in Miami, 1937 in Sydney, 677 in Melbourne,
-      // 1248 in Wellington, 55 in Hobart, 1562 in Nelson, 1231 in Christchurch, 584 in Invercargill.
-      // in other words, it's apparently descending based on latitude, but it's different on each
-      // landmass as well?? 
-      // why couldn't you just return it in meters like a normal person? i'm not a GIS nerd damnit, 
-      // I don't have every EPSG code memorized.
+      // this encodes the elevation in some way I don't fully understand -
+      // probably the height above some geoid, and then encoded in some specific way,
+      // but the details are still beyond my understanding.
       int32 elevation = 3;
       
       // heading of the car; north is 0 and it goes around CCW from there.
@@ -46,10 +42,10 @@ message MapTile {
       // see convert_heading() in geo.py for the formula.
       int32 heading = 4;
 
-      // Probably tilt
+      // Probably roll
       int32 unknown10 = 5;
       
-      // Probably roll
+      // Probably tilt
       int32 unknown11 = 6;
     }
     
@@ -61,8 +57,8 @@ message MapTile {
   
   message Unknown13 {
     int32 unknown14 = 1;
-    // this is the param that appears in pano URLs after the pano ID. 
-    // no idea what this does exactly.
+    // This is the param that appears in pano URLs after the pano ID.
+    // No idea what this does exactly, but I had to call it _something_.
     int32 region_id = 3;
     int32 unknown15 = 4;
     int32 unknown16 = 5;
@@ -73,7 +69,7 @@ message MapTile {
     int32 unknown21 = 12;
     
     enum CoverageType {
-      _ = 0;
+      DEFAULT = 0;
       CAR = 2;
       TREKKER = 3;
     }
@@ -108,12 +104,10 @@ message MapTile {
     }
   }
 
+  // The tile's coordinates in the slippy map standard.
   message TileCoordinate {
     int32 x = 1;
     int32 y = 2;
     int32 z = 3;
   }
-  
 }
-
-
