@@ -132,3 +132,5 @@ dmypy.json
 *.ipynb
 *.jpg
 *.heic
+tiles/
+*.geojson
