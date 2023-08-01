@@ -165,3 +165,19 @@ def get_mt7_file(panoid, region_id, auth, session=None):
         return response.content
     else:
         raise Exception(str(response))
+
+
+def get_m_file(panoid, region_id, zoom, auth, session=None):
+    panoid, region_id = _panoid_to_string(panoid, region_id)
+
+    url = PANO_FACE_ENDPOINT + f"{panoid}/{region_id}/m/{zoom}"
+    url = auth.authenticate_url(url)
+    if session:
+        response = session.get(url)
+    else:
+        response = requests.get(url)
+
+    if response.ok:
+        return response.content
+    else:
+        raise Exception(str(response))
