@@ -97,7 +97,6 @@ def _parse_coverage_tile_response(content: bytes) -> MapTile_pb2.MapTile:
 def get_pano_face(panoid: int, region_id: int, face: int, zoom: int,
                   auth: Authenticator, session: Session = None) -> bytes:
     url = _build_pano_face_url(panoid, region_id, face, zoom, auth)
-    print(url)
     requester = session if session else requests
     response = requester.get(url)
         
@@ -125,40 +124,37 @@ async def get_pano_face_async(panoid: int, region_id: int, face: int, zoom: int,
 
 
 def _build_pano_face_url(panoid: int, region_id: int, face: int, zoom: int, auth: Authenticator) -> str:
-    panoid = str(panoid)
-    region_id = str(region_id)
-    if len(panoid) > 20:
-        raise ValueError("panoid must not be longer than 20 digits.")
-    if len(region_id) > 10:
-        raise ValueError("region_id must not be longer than 10 digits.")
     if face > 5:
         raise ValueError("Faces range from 0 to 5 inclusive.")
     zoom = min(7, zoom)
-    panoid_padded = panoid.zfill(20)
-    panoid_split = [panoid_padded[i:i + 4] for i in range(0, len(panoid_padded), 4)]
-    panoid_url = "/".join(panoid_split)
-    region_id_padded = region_id.zfill(10)
-    url = PANO_FACE_ENDPOINT + f"{panoid_url}/{region_id_padded}/t/{face}/{zoom}"
+
+    panoid, region_id = _panoid_to_string(panoid, region_id)
+
+    url = PANO_FACE_ENDPOINT + f"{panoid}/{region_id}/t/{face}/{zoom}"
     url = auth.authenticate_url(url)
     return url
 
 
-def get_mt7_file(panoid, region_id, auth, session=None):
-    endpoint = "https://gspe72-ssl.ls.apple.com/mnn_us/"
+def _panoid_to_string(panoid, region_id):
     panoid = str(panoid)
     region_id = str(region_id)
     if len(panoid) > 20:
         raise ValueError("panoid must not be longer than 20 digits.")
     if len(region_id) > 10:
         raise ValueError("region_id must not be longer than 10 digits.")
-    
+
     panoid_padded = panoid.zfill(20)
     panoid_split = [panoid_padded[i:i + 4] for i in range(0, len(panoid_padded), 4)]
     panoid_url = "/".join(panoid_split)
-
     region_id_padded = region_id.zfill(10)
 
-    url = endpoint + f"{panoid_url}/{region_id_padded}/mt/7"
+    return panoid_url, region_id_padded
+
+
+def get_mt7_file(panoid, region_id, auth, session=None):
+    panoid, region_id = _panoid_to_string(panoid, region_id)
+
+    url = PANO_FACE_ENDPOINT + f"{panoid}/{region_id}/mt/7"
     url = auth.authenticate_url(url)
     if session:
         response = session.get(url)
