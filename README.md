@@ -1,5 +1,7 @@
 In which I reverse-engineer Apple Look Around and create a Python module for it.
 
+The reasonably stable parts of this have been integrated into my library [sk-zk/streetlevel](https://github.com/sk-zk/streetlevel/).
+
 ## Coverage tiles
 Panoramas can be found as XYZ tiles with z=17. I've abstracted this a bit for convenience:
 
@@ -37,7 +39,7 @@ url = auth.authenticate_url("https://gspe72-ssl.ls.apple.com/mnn_us/0665/1337/76
 ## Downloading imagery
 Now that we can find panoramas and authenticate our download requests, let's go download one.
 
-Panoramas are made of six faces; four side faces (0-3) and a top (4) and bottom (5) face.
+Panoramas are made up of six faces; four side faces (0-3) and a top (4) and bottom (5) face.
 Each face can be downloaded in eight different resolutions, where 0 is the largest and 7 is the smallest.
 
 ```python
