@@ -46,13 +46,13 @@ def _parse_coverage_tile(tile: MapTile_pb2.MapTile, tile_x: int, tile_y: int) ->
         projection = [tile.projection[x] for x in pano.projection_idx]
         pano_obj = LookaroundPanorama(
             pano.panoid,
-            tile.unknown13[pano.region_id_idx].region_id,
+            tile.unknown13[pano.batch_id_idx].batch_id,
             lat,
             lon,
             heading,
             projection,
             pano.location.elevation,
-            tile.unknown13[pano.region_id_idx].coverage_type,
+            tile.unknown13[pano.batch_id_idx].coverage_type,
             pano.timestamp
         )
         pano_obj.dbg = (pano.location.heading, pano.location.unknown10, pano.location.unknown11)
@@ -94,9 +94,9 @@ def _parse_coverage_tile_response(content: bytes) -> MapTile_pb2.MapTile:
     return tile
 
 
-def get_pano_face(panoid: int, region_id: int, face: int, zoom: int,
+def get_pano_face(panoid: int, batch_id: int, face: int, zoom: int,
                   auth: Authenticator, session: Session = None) -> bytes:
-    url = _build_pano_face_url(panoid, region_id, face, zoom, auth)
+    url = _build_pano_face_url(panoid, batch_id, face, zoom, auth)
     requester = session if session else requests
     response = requester.get(url)
         
@@ -123,38 +123,38 @@ async def get_pano_face_async(panoid: int, region_id: int, face: int, zoom: int,
 """
 
 
-def _build_pano_face_url(panoid: int, region_id: int, face: int, zoom: int, auth: Authenticator) -> str:
+def _build_pano_face_url(panoid: int, batch_id: int, face: int, zoom: int, auth: Authenticator) -> str:
     if face > 5:
         raise ValueError("Faces range from 0 to 5 inclusive.")
     zoom = min(7, zoom)
 
-    panoid, region_id = _panoid_to_string(panoid, region_id)
+    panoid, batch_id = _panoid_to_string(panoid, batch_id)
 
-    url = PANO_FACE_ENDPOINT + f"{panoid}/{region_id}/t/{face}/{zoom}"
+    url = PANO_FACE_ENDPOINT + f"{panoid}/{batch_id}/t/{face}/{zoom}"
     url = auth.authenticate_url(url)
     return url
 
 
-def _panoid_to_string(panoid, region_id):
+def _panoid_to_string(panoid, batch_id):
     panoid = str(panoid)
-    region_id = str(region_id)
+    batch_id = str(batch_id)
     if len(panoid) > 20:
         raise ValueError("panoid must not be longer than 20 digits.")
-    if len(region_id) > 10:
-        raise ValueError("region_id must not be longer than 10 digits.")
+    if len(batch_id) > 10:
+        raise ValueError("batch_id must not be longer than 10 digits.")
 
     panoid_padded = panoid.zfill(20)
     panoid_split = [panoid_padded[i:i + 4] for i in range(0, len(panoid_padded), 4)]
     panoid_url = "/".join(panoid_split)
-    region_id_padded = region_id.zfill(10)
+    batch_id_padded = batch_id.zfill(10)
 
-    return panoid_url, region_id_padded
+    return panoid_url, batch_id_padded
 
 
-def get_mt7_file(panoid, region_id, auth, session=None):
-    panoid, region_id = _panoid_to_string(panoid, region_id)
+def get_mt7_file(panoid, batch_id, auth, session=None):
+    panoid, batch_id = _panoid_to_string(panoid, batch_id)
 
-    url = PANO_FACE_ENDPOINT + f"{panoid}/{region_id}/mt/7"
+    url = PANO_FACE_ENDPOINT + f"{panoid}/{batch_id}/mt/7"
     url = auth.authenticate_url(url)
     if session:
         response = session.get(url)
@@ -167,10 +167,10 @@ def get_mt7_file(panoid, region_id, auth, session=None):
         raise Exception(str(response))
 
 
-def get_m_file(panoid, region_id, zoom, auth, session=None):
-    panoid, region_id = _panoid_to_string(panoid, region_id)
+def get_m_file(panoid, batch_id, zoom, auth, session=None):
+    panoid, batch_id = _panoid_to_string(panoid, batch_id)
 
-    url = PANO_FACE_ENDPOINT + f"{panoid}/{region_id}/m/{zoom}"
+    url = PANO_FACE_ENDPOINT + f"{panoid}/{batch_id}/m/{zoom}"
     url = auth.authenticate_url(url)
     if session:
         response = session.get(url)

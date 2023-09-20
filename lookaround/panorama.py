@@ -5,7 +5,7 @@ from typing import Any
 @dataclass
 class LookaroundPanorama:
     panoid: int
-    region_id: int
+    batch_id: int
     lat: float 
     lon: float 
     heading: float = None
@@ -22,5 +22,5 @@ class LookaroundPanorama:
         return str(self)
 
     def __str__(self):
-        return f"{self.panoid}/{self.region_id} ({self.lat:.6}, {self.lon:.6}) " \
+        return f"{self.panoid}/{self.batch_id} ({self.lat:.6}, {self.lon:.6}) " \
                f"[{self.date.strftime('%Y-%m-%d')}]"

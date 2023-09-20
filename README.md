@@ -12,11 +12,9 @@ from lookaround import get_coverage_tile_by_latlon
 panos = get_coverage_tile_by_latlon(46.52943, 10.45544)
 print(len(panos))
 print(panos[0].panoid)
-print(panos[0].region_id)  # I have no idea what this actually is, but it's
-                           # a secondary key required for downloading images
-                           # which appears to stay the same for a large region,
-                           # so I'm calling it a region_id for now.
-                           # Could be a camera ID as well.
+print(panos[0].batch_id)  # Every time a set of panos is published,
+                          # that batch is assigned an ID which must be included 
+                          # in the pano face URL.
 print(panos[0].lat, panos[0].lon)
 print(panos[0].date)
 ```
@@ -51,7 +49,7 @@ panos = get_coverage_tile_by_latlon(46.52943, 10.45544)
 auth = Authenticator()
 zoom = 2
 for face in range(0, 6):
-    image = get_pano_face(panos[0].panoid, panos[0].region_id, face, zoom, auth)
+    image = get_pano_face(panos[0].panoid, panos[0].batch_id, face, zoom, auth)
     with open(f"{panos[0].panoid}_{face}_{zoom}.heic", "wb") as f:
         f.write(image)
 ```
