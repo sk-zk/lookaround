@@ -1,4 +1,3 @@
-from datetime import datetime
 import requests
 from requests import Session
 from typing import List
@@ -45,15 +44,16 @@ def _parse_coverage_tile(tile: MapTile_pb2.MapTile, tile_x: int, tile_y: int) ->
         heading = geo.convert_heading(lat, lon, pano.location.heading)
         projection = [tile.projection[x] for x in pano.projection_idx]
         pano_obj = LookaroundPanorama(
-            pano.panoid,
-            tile.unknown13[pano.batch_id_idx].batch_id,
-            lat,
-            lon,
-            heading,
-            projection,
-            pano.location.elevation,
-            tile.unknown13[pano.batch_id_idx].coverage_type,
-            pano.timestamp
+            panoid=pano.panoid,
+            batch_id=tile.unknown13[pano.batch_id_idx].batch_id,
+            lat=lat,
+            lon=lon,
+            heading=heading,
+            projection=projection,
+            raw_elevation=pano.location.elevation,
+            coverage_type=tile.unknown13[pano.batch_id_idx].coverage_type,
+            timestamp=pano.timestamp,
+            has_blurs=tile.unknown13[pano.batch_id_idx].unknown14 != 0,
         )
         pano_obj.dbg = (pano.location.heading, pano.location.unknown10, pano.location.unknown11)
         panos.append(pano_obj)

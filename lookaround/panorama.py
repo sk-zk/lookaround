@@ -13,6 +13,7 @@ class LookaroundPanorama:
     raw_elevation: int = None
     coverage_type: int = None
     timestamp: int = None
+    has_blurs: bool = None
 
     @property
     def date(self):
