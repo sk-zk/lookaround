@@ -56,9 +56,12 @@ message MapTile {
   }
   
   message Unknown13 {
+    // no idea what exactly this is for, but values >0 indicate that the panos in this batch have blurs added to them
     int32 unknown14 = 1;
+    
     // I'm now calling this an upload batch ID; see readme for details
     int32 batch_id = 3;
+    
     int32 unknown15 = 4;
     int32 unknown16 = 5;
     CoverageType coverage_type = 6;
