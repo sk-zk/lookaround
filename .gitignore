@@ -134,3 +134,4 @@ dmypy.json
 *.heic
 tiles/
 *.geojson
+*.bin
