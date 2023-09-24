@@ -66,9 +66,11 @@ The response is a file in a custom binary format with the header `MCP4`, contain
 The `mt` file, among other things, contains the faces of the panorama at zoom level 7; don't ask me what all the other stuff is though.
 
 Here's how you can fetch the mt file and dump its contents:
+
 ```python
-import mcp4
+
 import lookaround
+from lookaround import mcp4
 from lookaround.auth import Authenticator
 
 auth = Authenticator()
@@ -76,12 +78,12 @@ entries = mcp4.parse(lookaround.get_mt7_file(10690709345221411827, 1596925660, a
 
 for i in range(len(entries)):
     filetype, content = entries[i].type, entries[i].content
-    
+
     if filetype == 3:
         # heic files have an extra 0 at the start for some reason
         content = content[1:]
 
-    ext = "heic" if filetype == 3 else "bin"      
+    ext = "heic" if filetype == 3 else "bin"
     with open(f"entry_{i}.{ext}", "wb") as f:
         f.write(content)
 ```
