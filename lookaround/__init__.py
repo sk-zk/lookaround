@@ -1,4 +1,3 @@
-from datetime import datetime
 import requests
 from requests import Session
 from typing import List
@@ -45,15 +44,16 @@ def _parse_coverage_tile(tile: MapTile_pb2.MapTile, tile_x: int, tile_y: int) ->
         heading = geo.convert_heading(lat, lon, pano.location.heading)
         projection = [tile.projection[x] for x in pano.projection_idx]
         pano_obj = LookaroundPanorama(
-            pano.panoid,
-            tile.unknown13[pano.batch_id_idx].batch_id,
-            lat,
-            lon,
-            heading,
-            projection,
-            pano.location.elevation,
-            tile.unknown13[pano.batch_id_idx].coverage_type,
-            pano.timestamp
+            panoid=pano.panoid,
+            batch_id=tile.unknown13[pano.batch_id_idx].batch_id,
+            lat=lat,
+            lon=lon,
+            heading=heading,
+            projection=projection,
+            raw_elevation=pano.location.elevation,
+            coverage_type=tile.unknown13[pano.batch_id_idx].coverage_type,
+            timestamp=pano.timestamp,
+            has_blurs=tile.unknown13[pano.batch_id_idx].unknown14 != 0,
         )
         pano_obj.dbg = (pano.location.heading, pano.location.unknown10, pano.location.unknown11)
         panos.append(pano_obj)
@@ -96,7 +96,7 @@ def _parse_coverage_tile_response(content: bytes) -> MapTile_pb2.MapTile:
 
 def get_pano_face(panoid: int, batch_id: int, face: int, zoom: int,
                   auth: Authenticator, session: Session = None) -> bytes:
-    url = _build_pano_face_url(panoid, batch_id, face, zoom, auth)
+    url = build_pano_face_url(panoid, batch_id, face, zoom, auth)
     requester = session if session else requests
     response = requester.get(url)
         
@@ -123,7 +123,7 @@ async def get_pano_face_async(panoid: int, region_id: int, face: int, zoom: int,
 """
 
 
-def _build_pano_face_url(panoid: int, batch_id: int, face: int, zoom: int, auth: Authenticator) -> str:
+def build_pano_face_url(panoid: int, batch_id: int, face: int, zoom: int, auth: Authenticator) -> str:
     if face > 5:
         raise ValueError("Faces range from 0 to 5 inclusive.")
     zoom = min(7, zoom)

@@ -58,3 +58,33 @@ The side faces are equirectangular and can be stitched together easily, but the 
 which I'm struggling to deal with.
 
 Images are in HEIC format, so you may need to install some plugins to view them.
+
+
+## m / mt
+There are two additional types of files requested by the Apple Maps client, `/m/<zoom>` and `/mt/7`.
+The response is a file in a custom binary format with the header `MCP4`, containing several binary blobs.
+The `mt` file, among other things, contains the faces of the panorama at zoom level 7; don't ask me what all the other stuff is though.
+
+Here's how you can fetch the mt file and dump its contents:
+
+```python
+
+import lookaround
+from lookaround import mcp4
+from lookaround.auth import Authenticator
+
+auth = Authenticator()
+entries = mcp4.parse(lookaround.get_mt7_file(10690709345221411827, 1596925660, auth))
+
+for i in range(len(entries)):
+    filetype, content = entries[i].type, entries[i].content
+
+    if filetype == 3:
+        # heic files have an extra 0 at the start for some reason
+        content = content[1:]
+
+    ext = "heic" if filetype == 3 else "bin"
+    with open(f"entry_{i}.{ext}", "wb") as f:
+        f.write(content)
+```
+
