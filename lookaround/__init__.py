@@ -103,7 +103,7 @@ def get_pano_face(panoid: int, batch_id: int, face: int, zoom: int,
     if response.ok:
         return response.content
     else:
-        raise Exception(str(response))
+        response.raise_for_status()
 
 
 # Tried to get this to work, but I'm out of ideas. Just 403s every time.
