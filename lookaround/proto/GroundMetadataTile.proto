@@ -29,10 +29,10 @@ message GroundMetadataTile {
       int32 x = 1;
       int32 y = 2;
       
-      // this encodes the elevation in some way I don't fully understand -
+      // this encodes the altitude in some way I don't fully understand -
       // probably the height above some geoid, and then encoded in some specific way,
       // but the details are still beyond my understanding.
-      int32 elevation = 3;
+      int32 altitude = 3;
       
       // heading of the car; north is 0 and it goes around CCW from there.
       // for some reason this has an offset based on the current longitude applied to it.

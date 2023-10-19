@@ -52,7 +52,7 @@ def _parse_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTile, tile_x
             lon=lon,
             heading=heading,
             camera_metadata=camera_metadata,
-            raw_elevation=pano.tile_position.elevation,
+            raw_altitude=pano.tile_position.altitude,
             coverage_type=tile.build_table[pano.build_table_idx].coverage_type,
             timestamp=pano.timestamp,
             has_blurs=tile.build_table[pano.build_table_idx].index != 0,

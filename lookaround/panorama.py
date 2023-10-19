@@ -11,7 +11,7 @@ class LookaroundPanorama:
     lon: float 
     heading: float = None
     camera_metadata: Any = None
-    raw_elevation: int = None
+    raw_altitude: int = None
     coverage_type: int = None
     timestamp: int = None
     has_blurs: bool = None
