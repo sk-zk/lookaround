@@ -2,14 +2,15 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
+
 @dataclass
 class LookaroundPanorama:
     panoid: int
-    batch_id: int
+    build_id: int
     lat: float 
     lon: float 
     heading: float = None
-    projection: Any = None
+    camera_metadata: Any = None
     raw_elevation: int = None
     coverage_type: int = None
     timestamp: int = None
