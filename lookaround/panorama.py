@@ -24,5 +24,5 @@ class LookaroundPanorama:
         return str(self)
 
     def __str__(self):
-        return f"{self.panoid}/{self.batch_id} ({self.lat:.6}, {self.lon:.6}) " \
+        return f"{self.panoid}/{self.build_id} ({self.lat:.6}, {self.lon:.6}) " \
                f"[{self.date.strftime('%Y-%m-%d')}]"
