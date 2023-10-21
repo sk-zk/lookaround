@@ -1,6 +1,13 @@
 import math
+from typing import Tuple
+import pyproj
+from pyproj import Transformer
 
+pyproj.network.set_network_enabled(active=True)
 TILE_SIZE = 256
+tf_web_mercator_to_ecef = Transformer.from_crs(3857, 4978)
+tf_wgs84_to_wgs84_egm2008 = Transformer.from_crs(4979, 9518)
+
 
 def convert_heading(latitude, longitude, raw_heading):
     """
@@ -9,7 +16,7 @@ def convert_heading(latitude, longitude, raw_heading):
     offset_factor = 1/(16384/360)
     heading = (offset_factor * raw_heading) - longitude
     # in the southern hemisphere, the heading also needs to be mirrored across the 90°/270° line
-    if (latitude < 0):
+    if latitude < 0:
         heading = -(heading - 90) + 90
     return math.radians(heading)
 
@@ -29,32 +36,93 @@ def protobuf_tile_offset_to_wgs84(x_offset, y_offset, tile_x, tile_y):
     return lat, lon
 
 
-def wgs84_to_tile_coord(lat, lon, zoom):
+def wgs84_to_tile_coord(lat: float, lon: float, zoom: int) -> Tuple[int, int]:
+    """
+    Converts WGS84 coordinates to XYZ coordinates.
+
+    :param lat: Latitude.
+    :param lon: Longitude.
+    :param zoom: Z coordinate.
+    :return: The X and Y coordinates.
+    """
+    lat_rad = math.radians(lat)
     scale = 1 << zoom
-    world_coord = wgs84_to_mercator(lat, lon)
-    pixel_coord = (math.floor(world_coord[0] * scale), math.floor(world_coord[1] * scale))
-    tile_coord = (math.floor((world_coord[0] * scale) / TILE_SIZE), math.floor((world_coord[1] * scale) / TILE_SIZE))
-    return tile_coord
+    x = (lon + 180.0) / 360.0 * scale
+    y = (1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * scale
+    return int(x), int(y)
 
 
-def wgs84_to_mercator(lat, lon):
-    siny = math.sin((lat * math.pi) / 180.0)
-    siny = min(max(siny, -0.9999), 0.9999)
-    return (
-        TILE_SIZE * (0.5 + lon / 360.0),
-        TILE_SIZE * (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi))
-    )
+def tile_coord_to_wgs84(x: float, y: float, zoom: int) -> Tuple[float, float]:
+    """
+    Converts XYZ tile coordinates to WGS84 coordinates.
 
-
-def mercator_to_wgs84(x, y):
-    lat = (2 * math.atan(math.exp((y - 128) / -(256 / (2 * math.pi)))) - math.pi / 2) / (math.pi / 180)
-    lon = (x - 128) / (256 / 360)
-    return lat, lon
-
-
-def tile_coord_to_wgs84(x, y, zoom):
+    :param x: X coordinate.
+    :param y: Y coordinate.
+    :param zoom: Z coordinate.
+    :return: WGS84 coordinates.
+    """
     scale = 1 << zoom
-    pixel_coord = (x * TILE_SIZE, y * TILE_SIZE)
-    world_coord = (pixel_coord[0] / scale, pixel_coord[1] / scale)
-    lat_lon = mercator_to_wgs84(world_coord[0], world_coord[1])
-    return lat_lon
+    lon_deg = x / scale * 360.0 - 180.0
+    lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * y / scale)))
+    lat_deg = math.degrees(lat_rad)
+    return lat_deg, lon_deg
+
+
+def convert_altitude(raw_altitude: int, lat: float, lon: float, tile_x: int, tile_y: int) -> float:
+    """
+    Converts the raw altitude returned by the API to height above MSL.
+
+    :param raw_altitude: Raw altitude from the API.
+    :param lat: WGS84 latitude of the location.
+    :param lon: WGS84 longitude of the location.
+    :param tile_x: X coordinate of the XYZ tile coordinates.
+    :param tile_y: Y coordinate of the XYZ tile coordinates.
+    :return: Height above MSL in meters.
+    """
+    # Adapted from _GEOOrientedPositionFromPDTilePosition in GeoServices.
+    # Don't really have much of a clue what's going on here, but it seems to work
+    zoom = 17
+    top_left = tile_coord_to_mercator(tile_x, tile_y, zoom)
+    top_right = tile_coord_to_mercator(tile_x + 1, tile_y, zoom)
+    
+    top_left_ecef = tf_web_mercator_to_ecef.transform(*top_left)
+    top_right_ecef = tf_web_mercator_to_ecef.transform(*top_right)
+
+    delta_x = top_left_ecef[0] - top_right_ecef[0]
+    delta_y = top_left_ecef[1] - top_right_ecef[1]
+    
+    height = math.sqrt(delta_x**2 + delta_y**2) * (raw_altitude / 16383.0)
+    geoid_height = get_geoid_height(lat, lon)
+    ortho_height = lon - geoid_height
+    return height + ortho_height - lon
+
+
+def tile_coord_to_mercator(tile_x: int, tile_y: int, zoom: int) -> Tuple[float, float]:
+    """
+    Converts XYZ tile coordinates to Web Mercator coordinates.
+
+    :param tile_x: X coordinate.
+    :param tile_y: Y coordinate.
+    :param zoom: Z coordinate.
+    :return: The Web Mercator coordinate.
+    """
+    # Adapted from _GEOOrientedPositionFromPDTilePosition in GeoServices.
+    # Don't really have much of a clue what's going on here, but it seems to work
+    scale = 1 << zoom
+    scale_recip = 1.0 / scale
+    web_mercator_size = 40086474.44
+    x = (tile_x * scale_recip - 0.5) * web_mercator_size
+    y = ((scale + ~tile_y) * scale_recip - 0.5) * web_mercator_size
+    return x, y
+
+
+def get_geoid_height(lat: float, lon: float) -> float:
+    """
+    Returns the EGM2008 geoid height at a WGS84 coordinate.
+
+    :param lat: Latitude.
+    :param lon: Longitude.
+    :return: Geoid height in meters.
+    """
+    _, _, geoid_height = tf_wgs84_to_wgs84_egm2008.transform(lat, lon, 0)
+    return -geoid_height

@@ -6,8 +6,8 @@ from aiohttp import ClientSession
 
 from lookaround.proto import GroundMetadataTile_pb2
 from .auth import Authenticator
-import lookaround.geo
 from .panorama import LookaroundPanorama
+from . import geo
 
 COVERAGE_TILE_ENDPOINT = "https://gspe76-ssl.ls.apple.com/api/tile?"
 PANO_FACE_ENDPOINT = "https://gspe72-ssl.ls.apple.com/mnn_us/"
@@ -52,12 +52,12 @@ def _parse_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTile, tile_x
             lon=lon,
             heading=heading,
             camera_metadata=camera_metadata,
-            raw_altitude=pano.tile_position.altitude,
+            elevation=geo.convert_altitude(pano.tile_position.altitude, lat, lon, tile_x, tile_y),
             coverage_type=tile.build_table[pano.build_table_idx].coverage_type,
             timestamp=pano.timestamp,
             has_blurs=tile.build_table[pano.build_table_idx].index != 0,
         )
-        # pano_obj.dbg = (pano.tile_position.heading, pano.tile_position.pitch, pano.tile_position.roll)
+        # pano_obj.dbg = (pano.tile_position.yaw, pano.tile_position.pitch, pano.tile_position.roll)
         panos.append(pano_obj)
     return panos
 
