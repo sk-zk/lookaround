@@ -3,8 +3,9 @@ In which I reverse-engineer Apple Look Around and create a Python module for it.
 The reasonably stable parts of this have been integrated into my library [sk-zk/streetlevel](https://github.com/sk-zk/streetlevel/), and the experimenting happens over here.
 
 ## Recent changes
-I finally found the function which deserializes the protobuf and have been able to recover most of the actual identifiers,
+* I finally found the function which deserializes the protobuf and have been able to recover most of the actual identifiers,
 so everything in the .proto and this module has been renamed accordingly.
+* The raw altitude now gets converted into elevation above MSL.
 
 ## Coverage tiles
 Panoramas can be found as XYZ tiles with z=17. I've abstracted this a bit for convenience:
@@ -13,7 +14,7 @@ Panoramas can be found as XYZ tiles with z=17. I've abstracted this a bit for co
 from lookaround import get_coverage_tile_by_latlon
 
 # fetches all panoramas on the tile which contains this coordinate
-panos = get_coverage_tile_by_latlon(46.52943, 10.45544)
+panos = get_coverage_tile_by_latlon(46.529426, 10.455443)
 print(len(panos))
 print(panos[0].__dict__)
 ```
