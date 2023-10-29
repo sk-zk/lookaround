@@ -3,12 +3,10 @@ In which I reverse-engineer Apple Look Around and create a Python module for it.
 The reasonably stable parts of this have been integrated into my library [sk-zk/streetlevel](https://github.com/sk-zk/streetlevel/), and the experimenting happens over here.
 
 ## Recent changes
-* I finally found the function which deserializes the protobuf and have been able to recover most of the actual identifiers,
-so everything in the .proto and this module has been renamed accordingly.
-* The raw altitude now gets converted into elevation above MSL.
+* The MCP4 parser now decompresses the entries.
 
 ## Coverage tiles
-Panoramas can be found as XYZ tiles with z=17. I've abstracted this a bit for convenience:
+Panoramas can be found as XYZ tiles with z=17. Here's how you can fetch a tile:
 
 ```python
 from lookaround import get_coverage_tile_by_latlon
@@ -59,32 +57,25 @@ which I'm struggling to deal with.
 
 Images are in HEIC format, so you may need to install some plugins to view them.
 
-
 ## m / mt
-There are two additional types of files requested by the Apple Maps client, `/m/<zoom>` and `/mt/7`.
+There are two additional files requested by the Apple Maps client, `/m/<zoom>` and `/mt/7`.
 The response is a file in a custom binary format with the header `MCP4`, containing several binary blobs.
-The `mt` file, among other things, contains the faces of the panorama at zoom level 7; don't ask me what all the other stuff is though.
+The `mt` file contains the mesh data, the pano faces at zoom level 7, and some other stuff.
 
-Here's how you can fetch the mt file and dump its contents:
+Here's how you can fetch the `mt` file and dump its contents:
 
 ```python
-
 import lookaround
 from lookaround import mcp4
 from lookaround.auth import Authenticator
 
 auth = Authenticator()
-entries = mcp4.parse(lookaround.get_mt7_file(10690709345221411827, 1596925660, auth))
+pano_id, build_id = 10690709345221411827, 1596925660
+entries = mcp4.parse(lookaround.get_mt7_file(pano_id, build_id, auth))
 
 for i in range(len(entries)):
     filetype, content = entries[i].type, entries[i].content
-
-    if filetype == 3:
-        # heic files have an extra 0 at the start for some reason
-        content = content[1:]
-
-    ext = "heic" if filetype == 3 else "bin"
+    ext = "heic" if filetype == 3 else f"{filetype}.bin"
     with open(f"entry_{i}.{ext}", "wb") as f:
         f.write(content)
 ```
-
