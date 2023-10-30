@@ -4,6 +4,7 @@ The reasonably stable parts of this have been integrated into my library [sk-zk/
 
 ## Recent changes
 * The MCP4 parser now decompresses the entries.
+* Mesh chunks can now be parsed into their individual sections.
 
 ## Coverage tiles
 Panoramas can be found as XYZ tiles with z=17. Here's how you can fetch a tile:
@@ -75,7 +76,15 @@ entries = mcp4.parse(lookaround.get_mt7_file(pano_id, build_id, auth))
 
 for i in range(len(entries)):
     filetype, content = entries[i].type, entries[i].content
-    ext = "heic" if filetype == 3 else f"{filetype}.bin"
+    if filetype == mcp4.EntryType.HEIC:
+        ext = "heic"
+    elif filetype == mcp4.EntryType.MESH_DATA:
+        ext = "mesh.bin"
+    else:
+        ext = "bin"
     with open(f"entry_{i}.{ext}", "wb") as f:
         f.write(content)
 ```
+
+Further, the mesh data entries can be parsed into their individual sections with `parse_mesh_chunks`
+(but a parser for these sections is not yet available).
