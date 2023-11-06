@@ -1,4 +1,6 @@
 import io
+import struct
+from typing import List
 
 
 class BinaryReader:
@@ -30,3 +32,16 @@ class BinaryReader:
 
     def read_uint4(self) -> int:
         return int.from_bytes(self.bs.read(4), byteorder="little", signed=False)
+
+    def read_float(self) -> float:
+        return struct.unpack("f", self.bs.read(4))[0]
+
+    def read_floats(self, n: int) -> List[float]:
+        return list(struct.unpack(f"{n}f", self.bs.read(n * 4)))
+
+    def read_double(self) -> float:
+        return struct.unpack("d", self.bs.read(8))[0]
+
+    def read_doubles(self, n: int) -> List[float]:
+        return list(struct.unpack(f"{n}d", self.bs.read(n * 8)))
+
