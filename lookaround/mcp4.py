@@ -160,13 +160,50 @@ def parse_connectivity_chunk(connectivity_bytes: bytes):
     return clers_string
 
 
-# def parse_vertices_cam_chunk(vertices_cam_bytes: bytes):
-#     r = BinaryReader(io.BytesIO(vertices_cam_bytes))
-#     vertex_count = r.read_uint4()
-#     some_floats = r.read_floats(3)
-#     _ = r.read_int2()
-#     some_doubles = r.read_doubles(16)
-#     _ = r.read_int4()
-#     some_more_doubles = r.read_doubles(4)
-#     _ = r.read_int4()
-#     ...
+@dataclass
+class VerticesCamChunk:
+    vertex_count: int
+    unknown_vec: List[float]
+    unknown1: int
+    cam_matrix_maybe: List[float]
+    unknown2: int
+    rotation: List[float]
+    unknown3: int
+    compressed_vertices: bytes
+    other_stuff: bytes
+
+
+def parse_vertices_cam_chunk(vertices_cam_bytes: bytes) -> VerticesCamChunk:
+    r = BinaryReader(io.BytesIO(vertices_cam_bytes))
+    vertex_count = r.read_uint4()
+    unknown_vec = r.read_floats(3)
+    unknown1 = r.read_int2()
+    cam_matrix_maybe = r.read_doubles(16)
+    unknown2 = r.read_int4()
+    rotation = r.read_doubles(4)
+    unknown3 = r.read_int4()
+    compressed_vertices = r.read(vertex_count * 3)
+    other_stuff = r.stream.read()
+    return VerticesCamChunk(vertex_count,
+                            unknown_vec,
+                            unknown1,
+                            cam_matrix_maybe,
+                            unknown2,
+                            rotation,
+                            unknown3,
+                            compressed_vertices,
+                            other_stuff)
+
+
+def pack_vertices_cam_chunk(vcc: VerticesCamChunk) -> bytes:
+    stream = io.BytesIO()
+    stream.write(struct.pack("I", vcc.vertex_count))
+    stream.write(struct.pack("fff", *vcc.unknown_vec))
+    stream.write(struct.pack("h", vcc.unknown1))
+    stream.write(struct.pack("dddddddddddddddd", *vcc.cam_matrix_maybe))
+    stream.write(struct.pack("i", vcc.unknown2))
+    stream.write(struct.pack("dddd", *vcc.rotation))
+    stream.write(struct.pack("i", vcc.unknown3))
+    stream.write(vcc.compressed_vertices)
+    stream.write(vcc.other_stuff)
+    return stream.getvalue()
