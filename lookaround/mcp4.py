@@ -6,8 +6,7 @@ from enum import Enum
 
 import liblzfse
 
-from .binary import BinaryReader
-
+from .binary import BinaryReader, BinaryWriter
 
 MCP4_MAGIC = b"MCP4"
 MESH_CHUNK_MAGIC = b"CHNK"
@@ -93,12 +92,12 @@ def extract_entry(length: int, offset: int, r: BinaryReader) -> bytes:
 
 
 def pack(entries: List[MCP4Entry]) -> bytes:
-    stream = io.BytesIO()
+    w = BinaryWriter(io.BytesIO())
 
     # write file header
-    stream.write(MCP4_MAGIC)
-    stream.write(struct.pack("H", 0))
-    stream.write(struct.pack("H", len(entries)))
+    w.write(MCP4_MAGIC)
+    w.write_uint2(0)
+    w.write_uint2(len(entries))
 
     # compress and pack entries
     entry_bytes = []
@@ -112,19 +111,19 @@ def pack(entries: List[MCP4Entry]) -> bytes:
         entry_bytes.append(struct.pack("b", compression_method) + content)
 
     # write entry offsets
-    header_length = stream.tell() + ((2+4+4) * len(entries))
+    header_length = w.stream.tell() + ((2+4+4) * len(entries))
     offset = header_length
     for i in range(0, len(entries)):
-        stream.write(struct.pack("H", entries[i].type.value))
-        stream.write(struct.pack("I", offset))
-        stream.write(struct.pack("I", len(entry_bytes[i])))
+        w.write_uint2(entries[i].type.value)
+        w.write_uint4(offset)
+        w.write_uint4(len(entry_bytes[i]))
         offset += len(entry_bytes[i])
 
     # write entries
     for entry in entry_bytes:
-        stream.write(entry)
+        w.write(entry)
 
-    return stream.getvalue()
+    return w.content
 
 
 def parse_mesh_chunks(chunks_bytes: bytes) -> List[MeshChunk]:
@@ -140,18 +139,18 @@ def parse_mesh_chunks(chunks_bytes: bytes) -> List[MeshChunk]:
 
 
 def pack_mesh_chunks(chunks: List[MeshChunk]) -> bytes:
-    stream = io.BytesIO()
+    w = BinaryWriter(io.BytesIO())
 
     for chunk in chunks:
-        stream.write(MESH_CHUNK_MAGIC)
-        stream.write(struct.pack("H", 1))
-        stream.write(struct.pack("I", chunk.type.value))
-        stream.write(struct.pack("I", chunk.unknown2))
-        stream.write(struct.pack("I", len(chunk.content)))
-        stream.write(struct.pack("I", 0))
-        stream.write(chunk.content)
+        w.write(MESH_CHUNK_MAGIC)
+        w.write_uint2(1)
+        w.write_uint4(chunk.type.value)
+        w.write_uint4(chunk.unknown2)
+        w.write_uint4(len(chunk.content))
+        w.write_uint4(0)
+        w.write(chunk.content)
 
-    return stream.getvalue()
+    return w.content
 
 
 def parse_mesh_chunk_header(r: BinaryReader) -> Tuple[MeshChunkType, int, int]:
@@ -214,14 +213,14 @@ def parse_vertices_cam_chunk(vertices_cam_bytes: bytes) -> VerticesCamChunk:
 
 
 def pack_vertices_cam_chunk(vcc: VerticesCamChunk) -> bytes:
-    stream = io.BytesIO()
-    stream.write(struct.pack("I", vcc.vertex_count))
-    stream.write(struct.pack("fff", *vcc.unknown_vec))
-    stream.write(struct.pack("h", vcc.unknown1))
-    stream.write(struct.pack("dddddddddddddddd", *vcc.cam_matrix_maybe))
-    stream.write(struct.pack("i", vcc.unknown2))
-    stream.write(struct.pack("dddd", *vcc.rotation))
-    stream.write(struct.pack("i", vcc.unknown3))
-    stream.write(vcc.compressed_vertices)
-    stream.write(vcc.other_stuff)
-    return stream.getvalue()
+    r = BinaryWriter(io.BytesIO())
+    r.write_uint4(vcc.vertex_count)
+    r.write(struct.pack("fff", *vcc.unknown_vec))
+    r.write_int2(vcc.unknown1)
+    r.write(struct.pack("dddddddddddddddd", *vcc.cam_matrix_maybe))
+    r.write_int4(vcc.unknown2)
+    r.write(struct.pack("dddd", *vcc.rotation))
+    r.write_int4(vcc.unknown3)
+    r.write(vcc.compressed_vertices)
+    r.write(vcc.other_stuff)
+    return r.content
