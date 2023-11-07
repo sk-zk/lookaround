@@ -8,7 +8,9 @@ import liblzfse
 
 from .binary import BinaryReader
 
+
 MCP4_MAGIC = b"MCP4"
+MESH_CHUNK_MAGIC = b"CHNK"
 
 
 class EntryType(Enum):
@@ -41,6 +43,7 @@ class MeshChunkType(Enum):
 class MeshChunk:
     type: MeshChunkType
     content: bytes
+    unknown2: int
 
 
 @dataclass
@@ -130,22 +133,37 @@ def parse_mesh_chunks(chunks_bytes: bytes) -> List[MeshChunk]:
 
     chunks = []
     while r.stream.tell() < len(chunks_bytes):
-        chunk_type, length = parse_mesh_chunk_header(r)
+        chunk_type, length, unknown2 = parse_mesh_chunk_header(r)
         content = r.read(length)
-        chunks.append(MeshChunk(chunk_type, content))
+        chunks.append(MeshChunk(chunk_type, content, unknown2))
     return chunks
 
 
-def parse_mesh_chunk_header(r: BinaryReader) -> Tuple[MeshChunkType, int]:
-    magic = r.read(4).decode("ascii")
-    if magic != "CHNK":
+def pack_mesh_chunks(chunks: List[MeshChunk]) -> bytes:
+    stream = io.BytesIO()
+
+    for chunk in chunks:
+        stream.write(MESH_CHUNK_MAGIC)
+        stream.write(struct.pack("H", 1))
+        stream.write(struct.pack("I", chunk.type.value))
+        stream.write(struct.pack("I", chunk.unknown2))
+        stream.write(struct.pack("I", len(chunk.content)))
+        stream.write(struct.pack("I", 0))
+        stream.write(chunk.content)
+
+    return stream.getvalue()
+
+
+def parse_mesh_chunk_header(r: BinaryReader) -> Tuple[MeshChunkType, int, int]:
+    magic = r.read(4)
+    if magic != MESH_CHUNK_MAGIC:
         raise ValueError("Invalid mesh data")
-    _ = r.read_uint2()  # always 1?
+    unknown1 = r.read_uint2()  # always 1?
     chunk_type = MeshChunkType(r.read_uint4())
-    _ = r.read_uint4()  # always 1?
+    unknown2 = r.read_uint4()
     length = r.read_uint4()
-    _ = r.read_uint4()  # always 0?
-    return chunk_type, length
+    unknown3 = r.read_uint4()  # always 0?
+    return chunk_type, length, unknown2
 
 
 def parse_connectivity_chunk(connectivity_bytes: bytes):
