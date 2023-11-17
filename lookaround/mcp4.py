@@ -26,13 +26,16 @@ class CompressionMethod(Enum):
 
 
 class MeshChunkType(Enum):
-    UNKNOWN0 = 0
-    VI_CONNECTIVITY_EB = 4
-    MATERIAL_ID = 5
-    VERTICES_PREDICTIVE = 6
-    UV_PREDICTIVE = 7
-    VERTICES_CUBE = 8
-    VERTICES_CAM = 9
+    MESH = 0
+    FACES = 1
+    VERTICES = 2
+    UV = 3
+    EB_CONNECTIVITY = 4
+    EB_FACE_ATTRIBUTES = 5
+    EB_VERTICES = 6
+    EB_UV = 7
+    EB_VERTICES_CUBE = 8
+    EB_VERTICES_CAM = 9
     UV_MODEL = 10
     POSTPROCESS = 11
 
