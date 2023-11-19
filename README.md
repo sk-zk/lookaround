@@ -3,8 +3,7 @@ In which I reverse-engineer Apple Look Around and create a Python module for it.
 The reasonably stable parts of this have been integrated into my library [sk-zk/streetlevel](https://github.com/sk-zk/streetlevel/), and the experimenting happens over here.
 
 ## Recent changes
-* The MCP4 parser now decompresses the entries.
-* Mesh chunks can now be parsed into their individual sections.
+* I've extracted the PoI protobuf messages from GeoServices and added them to the proto.
 
 ## Coverage tiles
 Panoramas can be found as XYZ tiles with z=17. Here's how you can fetch a tile:
