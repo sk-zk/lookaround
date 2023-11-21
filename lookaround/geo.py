@@ -145,11 +145,11 @@ def convert_pano_orientation(lat: float, lon: float, altitude: float,
     rot *= Rotation.from_quat((-0.5, -0.5, 0.5, 0.5))
     quat = rot.as_quat()
     quat2 = quat[3], -quat[2], -quat[0], quat[1]
-    conv_yaw, conv_pitch, conv_roll = _from_rigid_transform_rigid_no_offset(ecef_pos, quat2)
+    conv_yaw, conv_pitch, conv_roll = _from_rigid_transform_ecef_no_offset(ecef_pos, quat2)
     return conv_yaw, conv_pitch, conv_roll
 
 
-def _from_rigid_transform_rigid_no_offset(position: Tuple[float, float, float], 
+def _from_rigid_transform_ecef_no_offset(position: Tuple[float, float, float], 
                                           rotation: Tuple[float, float, float, float]) -> Tuple[float, float, float]:
     """
     via gdc::CameraFrame<>::fromRigidTransformEcefNoOffset() in VectorKit
