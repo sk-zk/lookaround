@@ -10,6 +10,8 @@ class LookaroundPanorama:
     lat: float 
     lon: float 
     heading: float = None
+    # pitch: float = None
+    # roll: float = None
     camera_metadata: Any = None
     elevation: float = None
     coverage_type: int = None

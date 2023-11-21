@@ -4,6 +4,7 @@ The reasonably stable parts of this have been integrated into my library [sk-zk/
 
 ## Recent changes
 * I've extracted the PoI protobuf messages from GeoServices and added them to the proto.
+* The heading calc has been updated and should actually be correct now.
 
 ## Coverage tiles
 Panoramas can be found as XYZ tiles with z=17. Here's how you can fetch a tile:

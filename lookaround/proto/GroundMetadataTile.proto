@@ -33,9 +33,8 @@ message GroundMetadataTile {
       // raw altitude; see geo.convert_altitude().
       int32 altitude = 3;
 
-      // heading of the car; north is 0 and it goes around CCW from there.
-      // for some reason this has an offset based on the current longitude applied to it.
-      // see convert_heading() in geo.py for the formula.
+      // weird nonsense.
+      // I think I can actually convert the yaw correctly now, but pitch and roll still need some more work
       int32 yaw = 4;
       int32 pitch = 5;
       int32 roll = 6;

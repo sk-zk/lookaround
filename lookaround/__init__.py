@@ -43,7 +43,9 @@ def _parse_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTile, tile_x
             pano.tile_position.y,
             tile_x,
             tile_y)
-        heading = geo.convert_heading(lat, lon, pano.tile_position.yaw)
+        altitude, elevation = geo.convert_altitude(pano.tile_position.altitude, lat, lon, tile_x, tile_y)
+        heading, _, _ = geo.convert_pano_orientation(lat, lon, altitude, pano.tile_position.yaw,
+                                                     pano.tile_position.pitch, pano.tile_position.roll)
         camera_metadata = [tile.camera_metadata[x] for x in pano.camera_metadata_idx]
         pano_obj = LookaroundPanorama(
             panoid=pano.panoid,
@@ -51,8 +53,10 @@ def _parse_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTile, tile_x
             lat=lat,
             lon=lon,
             heading=heading,
+            # pitch=pitch,
+            # roll=roll,
+            elevation=elevation,
             camera_metadata=camera_metadata,
-            elevation=geo.convert_altitude(pano.tile_position.altitude, lat, lon, tile_x, tile_y),
             coverage_type=tile.build_table[pano.build_table_idx].coverage_type,
             timestamp=pano.timestamp,
             has_blurs=tile.build_table[pano.build_table_idx].index != 0,

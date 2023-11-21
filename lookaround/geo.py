@@ -1,24 +1,15 @@
 import math
 from typing import Tuple
+import numpy as np
 import pyproj
 from pyproj import Transformer
+from scipy.spatial.transform import Rotation
 
 pyproj.network.set_network_enabled(active=True)
 TILE_SIZE = 256
 tf_web_mercator_to_ecef = Transformer.from_crs(3857, 4978)
 tf_wgs84_to_wgs84_egm2008 = Transformer.from_crs(4979, 9518)
-
-
-def convert_heading(latitude, longitude, raw_heading):
-    """
-    Converts the raw heading from the API to degrees.
-    """
-    offset_factor = 1/(16384/360)
-    heading = (offset_factor * raw_heading) - longitude
-    # in the southern hemisphere, the heading also needs to be mirrored across the 90°/270° line
-    if latitude < 0:
-        heading = -(heading - 90) + 90
-    return math.radians(heading)
+tf_wgs84_to_ecef = Transformer.from_crs(4326, 4978)
 
 
 def protobuf_tile_offset_to_wgs84(x_offset, y_offset, tile_x, tile_y):
@@ -68,7 +59,7 @@ def tile_coord_to_wgs84(x: float, y: float, zoom: int) -> Tuple[float, float]:
     return lat_deg, lon_deg
 
 
-def convert_altitude(raw_altitude: int, lat: float, lon: float, tile_x: int, tile_y: int) -> float:
+def convert_altitude(raw_altitude: int, lat: float, lon: float, tile_x: int, tile_y: int) -> Tuple[float, float]:
     """
     Converts the raw altitude returned by the API to height above MSL.
 
@@ -91,10 +82,11 @@ def convert_altitude(raw_altitude: int, lat: float, lon: float, tile_x: int, til
     delta_x = top_left_ecef[0] - top_right_ecef[0]
     delta_y = top_left_ecef[1] - top_right_ecef[1]
     
-    height = math.sqrt(delta_x**2 + delta_y**2) * (raw_altitude / 16383.0)
+    altitude = math.sqrt(delta_x**2 + delta_y**2) * (raw_altitude / 16383.0)
     geoid_height = get_geoid_height(lat, lon)
     ortho_height = lon - geoid_height
-    return height + ortho_height - lon
+    elevation = altitude + ortho_height - lon
+    return altitude, elevation
 
 
 def tile_coord_to_mercator(tile_x: int, tile_y: int, zoom: int) -> Tuple[float, float]:
@@ -126,3 +118,73 @@ def get_geoid_height(lat: float, lon: float) -> float:
     """
     _, _, geoid_height = tf_wgs84_to_wgs84_egm2008.transform(lat, lon, 0)
     return -geoid_height
+
+
+def convert_pano_orientation(lat: float, lon: float, altitude: float,
+                             raw_yaw: int, raw_pitch: int, raw_roll: int) -> Tuple[float, float, float]:
+    """
+    Converts the raw yaw/pitch/roll of a panorama returned by the API to the
+    rotation to apply to the photosphere.
+
+    The heading that comes out of this function looks correct, but the pitch and roll still aren't right.
+
+    :param lat: Latitude of the panorama.
+    :param lon: Longitude of the panorama.
+    :param altitude: GPS altitude (not height above MSL) of the panorama.
+    :param raw_yaw: Raw yaw value from the API.
+    :param raw_pitch: Raw pitch value from the API.
+    :param raw_roll: Raw roll value from the API.
+    :return: Converted heading/pitch/roll angles in radians.
+    """
+    yaw = (float(raw_yaw) / 16383.0) * math.tau
+    pitch = (float(raw_pitch) / 16383.0) * math.tau
+    roll = (float(raw_roll) / 16383.0) * math.tau
+    ecef_pos = tf_wgs84_to_ecef.transform(lat, lon, altitude)
+
+    rot = Rotation.from_euler("xyz", (yaw, pitch, roll))
+    rot *= Rotation.from_quat((-0.5, -0.5, 0.5, 0.5))
+    quat = rot.as_quat()
+    quat2 = quat[3], -quat[2], -quat[0], quat[1]
+    conv_yaw, conv_pitch, conv_roll = _from_rigid_transform_rigid_no_offset(ecef_pos, quat2)
+    return conv_yaw, conv_pitch, conv_roll
+
+
+def _from_rigid_transform_rigid_no_offset(position: Tuple[float, float, float], 
+                                          rotation: Tuple[float, float, float, float]) -> Tuple[float, float, float]:
+    """
+    via gdc::CameraFrame<>::fromRigidTransformEcefNoOffset() in VectorKit
+    """
+    _, frame_rot = _create_local_ecef_frame(position)
+    mult = Rotation.from_quat(frame_rot) * Rotation.from_quat(rotation)
+    local_rot = mult.as_euler("xzy")
+    return local_rot[2], -local_rot[0], -local_rot[1]
+
+
+def _create_local_ecef_frame(position: Tuple[float, float, float]) \
+        -> Tuple[Tuple[float, float, float], np.ndarray]:
+    """
+    via gdc::CameraFrame<>::createLocalEcefFrame() in VectorKit
+    """
+    rot_matrix = _create_local_ecef_basis(*position)
+    quaternion = Rotation.from_matrix(rot_matrix).as_quat()
+    return position, quaternion
+
+
+def _create_local_ecef_basis(x: float, y: float, z: float) -> np.ndarray:
+    """
+    via gdc::CameraFrame<>::createLocalEcefBasis() in VectorKit
+    """
+    longitude = math.atan2(y, x)
+    latitude = math.atan2(z, np.sqrt(x**2 + y**2))
+
+    cos_lat = math.cos(latitude)
+    sin_lat = math.sin(latitude)
+    cos_lon = math.cos(longitude)
+    sin_lon = math.sin(longitude)
+
+    ecef_basis = np.array([
+        [-sin_lon, cos_lon, 0],
+        [cos_lon * cos_lat, sin_lon * cos_lat, sin_lat],
+        [cos_lon * sin_lat, sin_lon * sin_lat, -cos_lat]
+    ])
+    return ecef_basis
