@@ -1,0 +1,16 @@
+syntax = "proto3";
+package streetlevel;
+
+message LatLng {
+  double lat = 1;
+  double lng = 2;
+}
+
+enum MapsResultType {
+  MAPS_RESULT_TYPE_UNKNOWN = 0;
+  MAPS_RESULT_TYPE_PLACE = 1;
+  MAPS_RESULT_TYPE_COLLECTION = 2;
+  MAPS_RESULT_TYPE_PUBLISHER = 3;
+  MAPS_RESULT_TYPE_PLACE_QUESTIONNAIRE = 4;
+  MAPS_RESULT_TYPE_BATCH_REVERSE_GEOCODE = 5;
+}

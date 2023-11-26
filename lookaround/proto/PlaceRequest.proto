@@ -1,0 +1,249 @@
+syntax = "proto3";
+package streetlevel;
+
+import "Shared.proto";
+
+message PlaceRequest {
+    AnalyticMetadata analytic_metadata = 1;
+    ClientMetadata client_metadata = 2;
+    repeated string display_language = 3;
+    string spoken_language = 4;
+    repeated ComponentInfo request_component = 5;
+    bool suppress_results_requiring_attribution = 6;
+    RequestType request_type = 7;
+    PlaceRequestParameters place_request_parameters = 8;
+    string display_region = 9;
+    repeated ComponentInfo auxiliary_tier_requested_component = 11;
+    //PrivacyMetadata privacy_metadata = 12;
+
+    message AnalyticMetadata {
+        string app_identifier = 1;
+        string app_major_version = 2;
+        string app_minor_version = 3;
+        string hardware_model = 4;
+        string os_version = 5;
+        bool is_internal_tool = 6;
+        bool is_internal_install = 7;
+        SessionID session_id = 8;
+        int64 sequence_number = 9;
+        int64 request_source = 10;
+        bool is_from_api = 12;
+        GeoServiceTag service_tag = 13;
+        string product_name = 14;
+        int32 logged_ab_experiment = 15;
+        int32 ab_assign_info = 16;
+        LocalTime request_time = 17;
+        uint64 relative_timestamp = 18;
+        bool is_siri_original_request = 19;
+        uint64 route_stop_count = 20;
+    }
+
+    message SessionID {
+        uint64 unknown1 = 1;
+        uint64 unknown2 = 2;
+    }
+
+    message GeoServiceTag {
+        ServiceType service_type = 1;
+        string tag = 2;
+    }
+
+    message LocalTime {
+        uint64 time_rounded_to_hour = 1;
+        int32 timezone_offset_from_gmt_in_hours = 2;
+        string human_readable = 2000;
+    }
+
+    message ClientMetadata {
+        string device_country_code = 1;
+        string device_display_language = 3;
+        string device_keyboard_language = 4;
+        string device_spoken_language = 5;
+        uint32 time_since_map_entered_foreground = 8;
+        //AdditionalEnabledMarkets additional_enabled_markets = 9;
+        bool result_list_attribution_support = 10;
+        uint32 hour_of_day = 11;
+        uint32 day_of_week = 12;
+        //GeoLocation device_extended_location = 13;
+        //GeoLocation device_historical_location = 15;
+        int32 required_version = 16;
+        string debug_api_key = 17;
+        repeated int32 known_client_resolved_type_deprecated = 18;
+        bool enable_preflight_venues = 19;
+        repeated int32 known_client_resolved_type = 20;
+        string business_chat_preflight_identifier = 21;
+        int32 client_revision = 22;
+        LocalizationCapabilities localization_capabilities = 23;
+        bool siri_user_consents_for_analysis = 24;
+        repeated MapsResultType supported_maps_result_type = 26;
+        //MapsSuggestionsTouristInfo maps_suggestions_tourist_info = 27;
+        repeated int32 client_revisions = 28;
+        string preferred_display_currency_symbol = 29;
+        string display_region = 30;
+        bool support_enrichment = 31;
+    }
+
+    message LocalizationCapabilities {
+        repeated SupportedPhoneticType supported_phonetic_type = 1;
+        bool supports_localized_traffic_control_icons = 2;
+    }
+
+    message PlaceRequestParameters {
+        //SearchParameters search_parameters = 1;
+        //GeocodingParameters geocoding_parameters = 2;
+        //CanonicalLocationSearchParameters canonical_location_search_parameters = 3;
+        ReverseGeocodingParameters reverse_geocoding_parameters = 4;
+        message ReverseGeocodingParameters {
+            LatLng location = 1;
+            int32 place_type_limit = 2;
+            bool preserve_original_location = 3;
+            Location extended_location = 4;
+        }
+        //PlaceLookupParameters place_lookup_parameters = 5;
+        //MerchantLookupParameters merchant_lookup_parameters = 6;
+        //PlaceRefinementParameters place_refinement_parameters = 7;
+        //SiriSearchParameters siri_search_parameters = 8;
+        //LocationDirectedSearchParameters location_directed_search_parameters = 9;
+        //AutocompleteParameters autocomplete_parameters = 10;
+        //etc. etc. etc.
+        //TODO Add all this stuff
+    }
+
+    message Location {
+        LatLng lat_lng = 1;
+        LocationType type = 2;
+        double timestamp = 3;
+        int32 altitude = 4;
+        double horizontal_accuracy = 5;
+        double vertical_accuracy = 6;
+        double speed = 7;
+        double heading = 8;
+        double course = 9;
+        int32 level_ordinal = 10;
+        //etc. etc. etc. TODO
+    }
+}
+
+message ComponentInfo {
+    int32 type = 1;
+    int32 start_index = 2;
+    int32 count = 3;
+    ComponentFilter component_filter = 5;
+    bool include_source = 6;
+    int32 urgency = 7;
+}
+
+message ComponentFilter {
+    // TODO All these fucking filter messages. There's dozens of these fucking things
+    AddressObjectFilter address_object_filter = 31;
+    message AddressObjectFilter {
+        repeated string library_version = 1;
+        bool enable_location = 2;
+    }
+}
+
+enum RequestType {
+    REQUEST_TYPE_UNKNOWN = 0;
+    REQUEST_TYPE_SEARCH = 1;
+    REQUEST_TYPE_GEOCODING = 2;
+    REQUEST_TYPE_CANONICAL_LOCATION_SEARCH = 3;
+    REQUEST_TYPE_REVERSE_GEOCODING = 4;
+    REQUEST_TYPE_PLACE_LOOKUP = 5;
+    REQUEST_TYPE_MERCHANT_LOOKUP = 6;
+    REQUEST_TYPE_PLACE_REFINEMENT = 7;
+    REQUEST_TYPE_SIRI_SEARCH = 8;
+    REQUEST_TYPE_LOCATION_DIRECTED_SEARCH = 9;
+    REQUEST_TYPE_AUTOCOMPLETE = 10;
+    REQUEST_TYPE_BROWSE_CATEGORY_SUGGESTION = 11;
+    REQUEST_TYPE_CATEGORY_SEARCH = 12;
+    REQUEST_TYPE_POPULAR_NEARBY = 13;
+    REQUEST_TYPE_ZERO_KEYWORD_CATEGORY_SUGGESTION = 14;
+    REQUEST_TYPE_SEARCH_FIELD_PLACEHOLDER = 15;
+    REQUEST_TYPE_BATCH_POPULAR_NEARBY_SEARCH = 16;
+    REQUEST_TYPE_VENDOR_SPECIFIC_PLACE_REFINEMENT = 17;
+    REQUEST_TYPE_NEARBY_SEARCH = 18;
+    REQUEST_TYPE_ADDRESS_OBJECT_GEOCODING = 19;
+    REQUEST_TYPE_ZERO_KEYWORD_WITH_SEARCH_RESULTS_SUGGESTION = 20;
+    REQUEST_TYPE_EXTERNAL_TRANSIT_LOOKUP = 21;
+    REQUEST_TYPE_FEATURE_ID_GEOCODING = 22;
+    REQUEST_TYPE_MAPS_IDENTIFIER_PLACE_LOOKUP = 23;
+    REQUEST_TYPE_DATASET_STATUS_CHECK = 24;
+    REQUEST_TYPE_OFFLINE_AREA_LOOKUP = 25;
+    REQUEST_TYPE_BATCH_REVERSE_GEOCODING = 26;
+    REQUEST_TYPE_OFFLINE_SUGGESTED_REGIONS = 27;
+    REQUEST_TYPE_OFFLINE_POLYGON_QUAD_NODES = 28;
+    REQUEST_TYPE_OFFLINE_PROACTIVE_REGIONS = 29;
+    REQUEST_TYPE_BRAND_LOOKUP = 30;
+    REQUEST_TYPE_OFFLINE_UPDATE_MANIFEST = 31;
+    REQUEST_TYPE_WIFI_FINGERPRINT_LOOKUP = 32;
+    REQUEST_TYPE_INITIAL_OFFLINE_SUGGESTION = 33;
+    REQUEST_TYPE_IP_GEO_LOOKUP = 34;
+    REQUEST_TYPE_GROUND_VIEW_LABEL= 35;
+    REQUEST_TYPE_BATCH_SPATIAL_LOOKUP = 36;
+    REQUEST_TYPE_TRANSIT_VEHICLE_POSITION = 37;
+    REQUEST_TYPE_PLACE_COLLECTION_LOOKUP = 38;
+    REQUEST_TYPE_TRANSIT_SCHEDULE_LOOKUP = 39;
+    REQUEST_TYPE_BATCH_CATEGORY_LOOKUP = 40;
+    REQUEST_TYPE_BATCH_MERCHANT_LOOKUP_BRAND = 41;
+    REQUEST_TYPE_CHILD_PLACE_LOOKUP_BY_CATEGORY = 42;
+    REQUEST_TYPE_COLLECTION_SUGGESTION = 43;
+    REQUEST_TYPE_MAPS_SEARCH_HOME = 44;
+    REQUEST_TYPE_PLACE_QUESTIONNAIRE_LOOKUP = 45;
+    REQUEST_TYPE_PUBLISHER_VIEW = 46;
+    REQUEST_TYPE_ALL_COLLECTIONS_VIEW = 47;
+    REQUEST_TYPE_AIRPORT_ENTITY_PLACE_LOOKUP = 48;
+    REQUEST_TYPE_TERRITORY_LOOKUP = 49;
+    REQUEST_TYPE_TRANSIT_NEARBY_SCHEDULE_LOOKUP = 50;
+    REQUEST_TYPE_MAPS_HOME = 51;
+    REQUEST_TYPE_ALL_GUIDES_LOCATIONS = 52;
+    REQUEST_TYPE_GUIDES_HOME = 53;
+    REQUEST_TYPE_EXTENDED_GEO_LOOKUP = 54;
+    REQUEST_TYPE_QUERY_UNDERSTANDING = 55;
+    REQUEST_TYPE_POI_AT_ADDRESS_LOOKUP = 56;
+    REQUEST_TYPE_TRANSIT_NEARBY_PAYMENT_METHOD_LOOKUP = 57;
+    REQUEST_TYPE_PLACECARD_ENRICHMENT = 58;
+}
+
+enum ServiceType {
+    SERVICE_UNKNOWN = 0;
+    REV_GEO = 1;
+    FWD_GEO = 2;
+    SEARCH = 3;
+    ROUTING = 4;
+    LOCATION_SERVICE = 5;
+    COLLECTION = 6;
+    CELL_WIFI_HARVEST = 7;
+    TRACE_HARVEST = 8;
+    TRAFFIC_TILES = 9;
+    RASTER = 10;
+    AUTO_COMPLETE = 11;
+    DASHBOARD_TEST = 12;
+    VECTOR = 13;
+    ADDR_PTS_HARVEST = 14;
+    DISPATCHER = 15;
+    PLACE_LOOKUP = 16;
+    PARSEC = 17;
+    GEO_SERVICES_FRAMEWORK = 18;
+    SIRI = 19;
+    MERCHANT_LOOKUP = 20;
+    GEO_SEARCH = 21;
+    TRAFFIC_ETA = 22;
+    COMMUNITY = 23;
+    LOCUS = 24;
+    AUTONAVI_FRONTDOOR = 25;
+    COMMUNITY_NON_PII = 26;
+    DISPATCHER_ENRICHMENT = 27;
+}
+
+enum SupportedPhoneticType {
+    NUANCE_LHPLUS = 0;
+    UNABBREVIATED = 1;
+    XSAMPA = 2;
+}
+
+enum LocationType {
+    GPS = 0;
+    WIFI = 1;
+    CELL = 2;
+    IP_ADDRESS = 3;
+}
