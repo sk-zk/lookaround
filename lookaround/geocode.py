@@ -13,7 +13,7 @@ def _reverse_geocode_build_pb_request(lat: float, lon: float, display_languages:
     # this must be set to get maps_result rather than legacy_place_result
     pr.client_metadata.supported_maps_result_type.append(Shared_pb2.MapsResultType.MAPS_RESULT_TYPE_PLACE)
 
-    pr.request_type = PlaceRequest_pb2.RequestType.REQUEST_TYPE_REVERSE_GEOCODING
+    pr.request_type = Shared_pb2.RequestType.REQUEST_TYPE_REVERSE_GEOCODING
     pr.place_request_parameters.reverse_geocoding_parameters.preserve_original_location = True
     pr.place_request_parameters.reverse_geocoding_parameters.extended_location.lat_lng.lat = lat
     pr.place_request_parameters.reverse_geocoding_parameters.extended_location.lat_lng.lng = lon
@@ -34,6 +34,5 @@ def reverse_geocode(lat: float, lon: float, display_language: List[str], session
     response = make_ticket_request(pb_request.SerializeToString(), session)
     place_response = PlaceResponse_pb2.PlaceResponse()
     place_response.ParseFromString(response)
-
-    address = place_response.maps_result.place.component[0].value[0].address_object.address_object.address
-    return list(address.address.address_line)
+    address = place_response.maps_result.place.component[0].value[0].address_object.address_object.place.address
+    return list(address.formatted_address)

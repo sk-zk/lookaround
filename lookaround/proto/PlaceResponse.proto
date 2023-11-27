@@ -5,7 +5,7 @@ import "Shared.proto";
 
 message PlaceResponse {
   int32 status = 1;
-  int32 request_type = 2;
+  RequestType request_type = 2;
   PlaceGlobalResult global_result = 3;
   //Place legacy_place_result = 4;
   repeated string display_language = 5;
@@ -77,9 +77,9 @@ message PlaceResponse {
     // There's some weird stuff going on with this field.
     // I think it's actually defined as `bytes` in the original .proto
     // and it gets parsed in some other place. In any case, I haven't been
-    // able to recover the original identifiers for this message, so I'm just
-    // going to call `AddressObject_` for now, and all identifiers of its
-    // members are my own
+    // able to recover the original names for this message and its contents, so what follows
+    // is partially based on https://developer.apple.com/documentation/mapkitjs/place
+    // and the rest is inferred from the values of the fields.
     AddressObject_ address_object = 1;
   }
 
@@ -88,7 +88,7 @@ message PlaceResponse {
     string unknown2 = 2;
     Unknown3 unknown3 = 3;
     Unknown4 unknown4 = 4;
-    Address address = 101;
+    Place_ place = 101;
   }
 
   message Unknown3 {
@@ -104,60 +104,59 @@ message PlaceResponse {
     string unknown11 = 4;
   }
 
-  message Address {
-    string place_1 = 1;
-    Address1 address = 2;
-    string place_2 = 3;
-    string formatted_place = 4;
-    FormattedAddressComponents formatted_address_components = 5;
+  message Place_ {
+    string name = 1;
+    Address address = 2;
+    string name_2 = 3;
+    string markup_name = 4;
+    MarkupAddressComponents markup_address_components = 5;
     string unknown14 = 7;
     Unknown15 unknown15 = 100;
   }
 
-  message Address1 {
-    repeated string address_line = 11;
+  message Address {
+    repeated string formatted_address = 11;
     AddressComponents address_components = 15;
   }
 
   message AddressComponents {
     string country = 1;
     string country_code = 2; //  ISO 3166 country code
-    string state = 3;
-    string region_code = 4; // ISO 3166 region code
+    string administrative_area = 3;
+    string administrative_area_code = 4; // ISO 3166 region code
     string county = 5;
-    string city = 6;
-    string postal_code = 7;
-    string neighborhood = 8;
-    string street = 10;
-    string house_number = 11;
-    string street_and_house_number = 12;
-    repeated string place = 14;
-    repeated string enclosing_area = 17;
+    string locality = 6;
+    string post_code = 7;
+    string sub_locality = 8;
+    string thoroughfare = 10;
+    string sub_thoroughfare = 11;
+    string full_thoroughfare = 12;
+    repeated string areas_of_interest = 14;
+    repeated string dependent_localities = 17;
   }
 
-  message FormattedAddressComponents {
+  message MarkupAddressComponents {
     string country_1 = 1;
     string country_2 = 2;
-    string state_1 = 3;
-    string state_2 = 4;
+    string administrative_area_1 = 3;
+    string administrative_area_2 = 4;
     string county = 5;
-    string city = 6;
-    string neighborhood_1 = 7;
-    string neighborhood_2 = 8;
-    string street = 10;
-    string house_number = 11;
-    string street_and_house_number = 12;
+    string locality = 6;
+    string sub_locality_1 = 7;
+    string sub_locality_2 = 8;
+    string thoroughfare = 10;
+    string sub_thoroughfare = 11;
+    string full_thoroughfare = 12;
     repeated string place = 14;
     repeated string enclosing_area = 17;
   }
 
   message Unknown15 {
-    string city_1 = 1;
-    string place = 2;
-    string street_and_city = 5;
-    string city_2 = 6;
+    string locality_1 = 1;
+    string name = 2;
+    string full_thoroughfare_and_locality = 5;
+    string locality_2 = 6;
     string ward = 10;
-
   }
 
   message MapsIdentifier {

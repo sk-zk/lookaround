@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from . import Shared_pb2 as Shared__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13PlaceResponse.proto\x12\x0bstreetlevel\x1a\x0cShared.proto\"\xdf\x17\n\rPlaceResponse\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x14\n\x0crequest_type\x18\x02 \x01(\x05\x12\x43\n\rglobal_result\x18\x03 \x01(\x0b\x32,.streetlevel.PlaceResponse.PlaceGlobalResult\x12\x18\n\x10\x64isplay_language\x18\x05 \x03(\t\x12\x16\n\x0e\x64isplay_region\x18\x06 \x03(\t\x12\x17\n\x0fspoken_language\x18\x07 \x03(\t\x12\x15\n\rdebug_api_key\x18\x08 \x01(\t\x12\x45\n\x11\x64\x61taset_ab_status\x18\t \x01(\x0b\x32*.streetlevel.PlaceResponse.DatasetABStatus\x12:\n\x0bmaps_result\x18\n \x01(\x0b\x32%.streetlevel.PlaceResponse.MapsResult\x12\x19\n\x10\x64\x65\x62ug_latency_ms\x18\xe8\x07 \x01(\x04\x1a\xa5\x01\n\x11PlaceGlobalResult\x12\x65\n\x18reverse_geocoding_result\x18\x04 \x01(\x0b\x32\x43.streetlevel.PlaceResponse.PlaceGlobalResult.ReverseGeocodingResult\x1a)\n\x16ReverseGeocodingResult\x12\x0f\n\x07unknown\x18\x64 \x01(\x05\x1a%\n\x0f\x44\x61tasetABStatus\x12\x12\n\ndataset_id\x18\x01 \x01(\r\x1ao\n\nMapsResult\x12\x30\n\x0bresult_type\x18\x01 \x01(\x0e\x32\x1b.streetlevel.MapsResultType\x12/\n\x05place\x18\x02 \x01(\x0b\x32 .streetlevel.PlaceResponse.Place\x1a\x91\x02\n\x05Place\x12\x0c\n\x04muid\x18\x01 \x01(\x04\x12#\n\x06status\x18\x02 \x01(\x0e\x32\x13.streetlevel.Status\x12\x16\n\x0epreferred_muid\x18\x03 \x01(\x04\x12\x37\n\tcomponent\x18\x04 \x03(\x0b\x32$.streetlevel.PlaceResponse.Component\x12\x1a\n\x12result_provider_id\x18\x05 \x01(\x05\x12\x16\n\x0eupdate_version\x18\x06 \x01(\x04\x12:\n\x07maps_id\x18\x07 \x01(\x0b\x32).streetlevel.PlaceResponse.MapsIdentifier\x12\x14\n\x0c\x63reated_time\x18\x08 \x01(\x04\x1a\xf5\x01\n\tComponent\x12\x0c\n\x04type\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x0b\n\x03ttl\x18\x04 \x01(\x05\x12\x13\n\x0bstart_index\x18\x05 \x01(\x05\x12\x18\n\x10values_available\x18\x06 \x01(\x08\x12\x38\n\x05value\x18\x08 \x03(\x0b\x32).streetlevel.PlaceResponse.ComponentValue\x12\x16\n\x0eversion_domain\x18\t \x03(\t\x12\x0f\n\x07version\x18\n \x01(\x05\x12\x15\n\rcache_control\x18\x0c \x01(\x05\x12\x14\n\x0c\x63omponent_id\x18\r \x01(\x04\x1aR\n\x0e\x43omponentValue\x12@\n\x0e\x61\x64\x64ress_object\x18\x1f \x01(\x0b\x32(.streetlevel.PlaceResponse.AddressObject\x1aR\n\rAddressObject\x12\x41\n\x0e\x61\x64\x64ress_object\x18\x01 \x01(\x0b\x32).streetlevel.PlaceResponse.AddressObject_\x1a\xd7\x01\n\x0e\x41\x64\x64ressObject_\x12\x10\n\x08unknown1\x18\x01 \x01(\x05\x12\x10\n\x08unknown2\x18\x02 \x01(\t\x12\x35\n\x08unknown3\x18\x03 \x01(\x0b\x32#.streetlevel.PlaceResponse.Unknown3\x12\x35\n\x08unknown4\x18\x04 \x01(\x0b\x32#.streetlevel.PlaceResponse.Unknown4\x12\x33\n\x07\x61\x64\x64ress\x18\x65 \x01(\x0b\x32\".streetlevel.PlaceResponse.Address\x1a@\n\x08Unknown3\x12\x10\n\x08unknown5\x18\x01 \x01(\t\x12\x10\n\x08unknown6\x18\x02 \x01(\t\x12\x10\n\x08unknown7\x18\x03 \x01(\t\x1aT\n\x08Unknown4\x12\x10\n\x08unknown8\x18\x01 \x01(\t\x12\x10\n\x08unknown9\x18\x02 \x01(\r\x12\x11\n\tunknown10\x18\x03 \x01(\t\x12\x11\n\tunknown11\x18\x04 \x01(\t\x1a\xa3\x02\n\x07\x41\x64\x64ress\x12\x0f\n\x07place_1\x18\x01 \x01(\t\x12\x34\n\x07\x61\x64\x64ress\x18\x02 \x01(\x0b\x32#.streetlevel.PlaceResponse.Address1\x12\x0f\n\x07place_2\x18\x03 \x01(\t\x12\x17\n\x0f\x66ormatted_place\x18\x04 \x01(\t\x12[\n\x1c\x66ormatted_address_components\x18\x05 \x01(\x0b\x32\x35.streetlevel.PlaceResponse.FormattedAddressComponents\x12\x11\n\tunknown14\x18\x07 \x01(\t\x12\x37\n\tunknown15\x18\x64 \x01(\x0b\x32$.streetlevel.PlaceResponse.Unknown15\x1aj\n\x08\x41\x64\x64ress1\x12\x14\n\x0c\x61\x64\x64ress_line\x18\x0b \x03(\t\x12H\n\x12\x61\x64\x64ress_components\x18\x0f \x01(\x0b\x32,.streetlevel.PlaceResponse.AddressComponents\x1a\x95\x02\n\x11\x41\x64\x64ressComponents\x12\x0f\n\x07\x63ountry\x18\x01 \x01(\t\x12\x14\n\x0c\x63ountry_code\x18\x02 \x01(\t\x12\r\n\x05state\x18\x03 \x01(\t\x12\x13\n\x0bregion_code\x18\x04 \x01(\t\x12\x0e\n\x06\x63ounty\x18\x05 \x01(\t\x12\x0c\n\x04\x63ity\x18\x06 \x01(\t\x12\x13\n\x0bpostal_code\x18\x07 \x01(\t\x12\x14\n\x0cneighborhood\x18\x08 \x01(\t\x12\x0e\n\x06street\x18\n \x01(\t\x12\x14\n\x0chouse_number\x18\x0b \x01(\t\x12\x1f\n\x17street_and_house_number\x18\x0c \x01(\t\x12\r\n\x05place\x18\x0e \x03(\t\x12\x16\n\x0e\x65nclosing_area\x18\x11 \x03(\t\x1a\xa0\x02\n\x1a\x46ormattedAddressComponents\x12\x11\n\tcountry_1\x18\x01 \x01(\t\x12\x11\n\tcountry_2\x18\x02 \x01(\t\x12\x0f\n\x07state_1\x18\x03 \x01(\t\x12\x0f\n\x07state_2\x18\x04 \x01(\t\x12\x0e\n\x06\x63ounty\x18\x05 \x01(\t\x12\x0c\n\x04\x63ity\x18\x06 \x01(\t\x12\x16\n\x0eneighborhood_1\x18\x07 \x01(\t\x12\x16\n\x0eneighborhood_2\x18\x08 \x01(\t\x12\x0e\n\x06street\x18\n \x01(\t\x12\x14\n\x0chouse_number\x18\x0b \x01(\t\x12\x1f\n\x17street_and_house_number\x18\x0c \x01(\t\x12\r\n\x05place\x18\x0e \x03(\t\x12\x16\n\x0e\x65nclosing_area\x18\x11 \x03(\t\x1a\x61\n\tUnknown15\x12\x0e\n\x06\x63ity_1\x18\x01 \x01(\t\x12\r\n\x05place\x18\x02 \x01(\t\x12\x17\n\x0fstreet_and_city\x18\x05 \x01(\t\x12\x0e\n\x06\x63ity_2\x18\x06 \x01(\t\x12\x0c\n\x04ward\x18\n \x01(\t\x1aJ\n\x0eMapsIdentifier\x12\x38\n\nsharded_id\x18\x01 \x01(\x0b\x32$.streetlevel.PlaceResponse.ShardedId\x1a\x80\x01\n\tShardedId\x12\x0c\n\x04muid\x18\x01 \x01(\x04\x12#\n\x06\x63\x65nter\x18\x02 \x01(\x0b\x32\x13.streetlevel.LatLng\x12\x1a\n\x12result_provider_id\x18\x03 \x01(\x05\x12\x12\n\nbasemap_id\x18\x04 \x01(\x05\x12\x10\n\x08unknown0\x18\x05 \x01(\x05*\xcc\x01\n\x06Status\x12\x12\n\x0eSTATUS_SUCCESS\x10\x00\x12\x11\n\rSTATUS_FAILED\x10\x01\x12\x15\n\x11STATUS_INCOMPLETE\x10\x02\x12\x13\n\x0fINVALID_REQUEST\x10\x05\x12\x14\n\x10\x46\x41ILED_NO_RESULT\x10\x14\x12\x14\n\x10NEEDS_REFINEMENT\x10\x1e\x12\x19\n\x15\x46\x41ILED_NOT_AUTHORIZED\x10(\x12\x12\n\x0eSTATUS_DEDUPED\x10\x32\x12\x14\n\x10VERSION_MISMATCH\x10<b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13PlaceResponse.proto\x12\x0bstreetlevel\x1a\x0cShared.proto\"\xd4\x18\n\rPlaceResponse\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12.\n\x0crequest_type\x18\x02 \x01(\x0e\x32\x18.streetlevel.RequestType\x12\x43\n\rglobal_result\x18\x03 \x01(\x0b\x32,.streetlevel.PlaceResponse.PlaceGlobalResult\x12\x18\n\x10\x64isplay_language\x18\x05 \x03(\t\x12\x16\n\x0e\x64isplay_region\x18\x06 \x03(\t\x12\x17\n\x0fspoken_language\x18\x07 \x03(\t\x12\x15\n\rdebug_api_key\x18\x08 \x01(\t\x12\x45\n\x11\x64\x61taset_ab_status\x18\t \x01(\x0b\x32*.streetlevel.PlaceResponse.DatasetABStatus\x12:\n\x0bmaps_result\x18\n \x01(\x0b\x32%.streetlevel.PlaceResponse.MapsResult\x12\x19\n\x10\x64\x65\x62ug_latency_ms\x18\xe8\x07 \x01(\x04\x1a\xa5\x01\n\x11PlaceGlobalResult\x12\x65\n\x18reverse_geocoding_result\x18\x04 \x01(\x0b\x32\x43.streetlevel.PlaceResponse.PlaceGlobalResult.ReverseGeocodingResult\x1a)\n\x16ReverseGeocodingResult\x12\x0f\n\x07unknown\x18\x64 \x01(\x05\x1a%\n\x0f\x44\x61tasetABStatus\x12\x12\n\ndataset_id\x18\x01 \x01(\r\x1ao\n\nMapsResult\x12\x30\n\x0bresult_type\x18\x01 \x01(\x0e\x32\x1b.streetlevel.MapsResultType\x12/\n\x05place\x18\x02 \x01(\x0b\x32 .streetlevel.PlaceResponse.Place\x1a\x91\x02\n\x05Place\x12\x0c\n\x04muid\x18\x01 \x01(\x04\x12#\n\x06status\x18\x02 \x01(\x0e\x32\x13.streetlevel.Status\x12\x16\n\x0epreferred_muid\x18\x03 \x01(\x04\x12\x37\n\tcomponent\x18\x04 \x03(\x0b\x32$.streetlevel.PlaceResponse.Component\x12\x1a\n\x12result_provider_id\x18\x05 \x01(\x05\x12\x16\n\x0eupdate_version\x18\x06 \x01(\x04\x12:\n\x07maps_id\x18\x07 \x01(\x0b\x32).streetlevel.PlaceResponse.MapsIdentifier\x12\x14\n\x0c\x63reated_time\x18\x08 \x01(\x04\x1a\xf5\x01\n\tComponent\x12\x0c\n\x04type\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x0b\n\x03ttl\x18\x04 \x01(\x05\x12\x13\n\x0bstart_index\x18\x05 \x01(\x05\x12\x18\n\x10values_available\x18\x06 \x01(\x08\x12\x38\n\x05value\x18\x08 \x03(\x0b\x32).streetlevel.PlaceResponse.ComponentValue\x12\x16\n\x0eversion_domain\x18\t \x03(\t\x12\x0f\n\x07version\x18\n \x01(\x05\x12\x15\n\rcache_control\x18\x0c \x01(\x05\x12\x14\n\x0c\x63omponent_id\x18\r \x01(\x04\x1aR\n\x0e\x43omponentValue\x12@\n\x0e\x61\x64\x64ress_object\x18\x1f \x01(\x0b\x32(.streetlevel.PlaceResponse.AddressObject\x1aR\n\rAddressObject\x12\x41\n\x0e\x61\x64\x64ress_object\x18\x01 \x01(\x0b\x32).streetlevel.PlaceResponse.AddressObject_\x1a\xd4\x01\n\x0e\x41\x64\x64ressObject_\x12\x10\n\x08unknown1\x18\x01 \x01(\x05\x12\x10\n\x08unknown2\x18\x02 \x01(\t\x12\x35\n\x08unknown3\x18\x03 \x01(\x0b\x32#.streetlevel.PlaceResponse.Unknown3\x12\x35\n\x08unknown4\x18\x04 \x01(\x0b\x32#.streetlevel.PlaceResponse.Unknown4\x12\x30\n\x05place\x18\x65 \x01(\x0b\x32!.streetlevel.PlaceResponse.Place_\x1a@\n\x08Unknown3\x12\x10\n\x08unknown5\x18\x01 \x01(\t\x12\x10\n\x08unknown6\x18\x02 \x01(\t\x12\x10\n\x08unknown7\x18\x03 \x01(\t\x1aT\n\x08Unknown4\x12\x10\n\x08unknown8\x18\x01 \x01(\t\x12\x10\n\x08unknown9\x18\x02 \x01(\r\x12\x11\n\tunknown10\x18\x03 \x01(\t\x12\x11\n\tunknown11\x18\x04 \x01(\t\x1a\x93\x02\n\x06Place_\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x33\n\x07\x61\x64\x64ress\x18\x02 \x01(\x0b\x32\".streetlevel.PlaceResponse.Address\x12\x0e\n\x06name_2\x18\x03 \x01(\t\x12\x13\n\x0bmarkup_name\x18\x04 \x01(\t\x12U\n\x19markup_address_components\x18\x05 \x01(\x0b\x32\x32.streetlevel.PlaceResponse.MarkupAddressComponents\x12\x11\n\tunknown14\x18\x07 \x01(\t\x12\x37\n\tunknown15\x18\x64 \x01(\x0b\x32$.streetlevel.PlaceResponse.Unknown15\x1an\n\x07\x41\x64\x64ress\x12\x19\n\x11\x66ormatted_address\x18\x0b \x03(\t\x12H\n\x12\x61\x64\x64ress_components\x18\x0f \x01(\x0b\x32,.streetlevel.PlaceResponse.AddressComponents\x1a\xc8\x02\n\x11\x41\x64\x64ressComponents\x12\x0f\n\x07\x63ountry\x18\x01 \x01(\t\x12\x14\n\x0c\x63ountry_code\x18\x02 \x01(\t\x12\x1b\n\x13\x61\x64ministrative_area\x18\x03 \x01(\t\x12 \n\x18\x61\x64ministrative_area_code\x18\x04 \x01(\t\x12\x0e\n\x06\x63ounty\x18\x05 \x01(\t\x12\x10\n\x08locality\x18\x06 \x01(\t\x12\x11\n\tpost_code\x18\x07 \x01(\t\x12\x14\n\x0csub_locality\x18\x08 \x01(\t\x12\x14\n\x0cthoroughfare\x18\n \x01(\t\x12\x18\n\x10sub_thoroughfare\x18\x0b \x01(\t\x12\x19\n\x11\x66ull_thoroughfare\x18\x0c \x01(\t\x12\x19\n\x11\x61reas_of_interest\x18\x0e \x03(\t\x12\x1c\n\x14\x64\x65pendent_localities\x18\x11 \x03(\t\x1a\xc1\x02\n\x17MarkupAddressComponents\x12\x11\n\tcountry_1\x18\x01 \x01(\t\x12\x11\n\tcountry_2\x18\x02 \x01(\t\x12\x1d\n\x15\x61\x64ministrative_area_1\x18\x03 \x01(\t\x12\x1d\n\x15\x61\x64ministrative_area_2\x18\x04 \x01(\t\x12\x0e\n\x06\x63ounty\x18\x05 \x01(\t\x12\x10\n\x08locality\x18\x06 \x01(\t\x12\x16\n\x0esub_locality_1\x18\x07 \x01(\t\x12\x16\n\x0esub_locality_2\x18\x08 \x01(\t\x12\x14\n\x0cthoroughfare\x18\n \x01(\t\x12\x18\n\x10sub_thoroughfare\x18\x0b \x01(\t\x12\x19\n\x11\x66ull_thoroughfare\x18\x0c \x01(\t\x12\r\n\x05place\x18\x0e \x03(\t\x12\x16\n\x0e\x65nclosing_area\x18\x11 \x03(\t\x1aw\n\tUnknown15\x12\x12\n\nlocality_1\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12&\n\x1e\x66ull_thoroughfare_and_locality\x18\x05 \x01(\t\x12\x12\n\nlocality_2\x18\x06 \x01(\t\x12\x0c\n\x04ward\x18\n \x01(\t\x1aJ\n\x0eMapsIdentifier\x12\x38\n\nsharded_id\x18\x01 \x01(\x0b\x32$.streetlevel.PlaceResponse.ShardedId\x1a\x80\x01\n\tShardedId\x12\x0c\n\x04muid\x18\x01 \x01(\x04\x12#\n\x06\x63\x65nter\x18\x02 \x01(\x0b\x32\x13.streetlevel.LatLng\x12\x1a\n\x12result_provider_id\x18\x03 \x01(\x05\x12\x12\n\nbasemap_id\x18\x04 \x01(\x05\x12\x10\n\x08unknown0\x18\x05 \x01(\x05*\xcc\x01\n\x06Status\x12\x12\n\x0eSTATUS_SUCCESS\x10\x00\x12\x11\n\rSTATUS_FAILED\x10\x01\x12\x15\n\x11STATUS_INCOMPLETE\x10\x02\x12\x13\n\x0fINVALID_REQUEST\x10\x05\x12\x14\n\x10\x46\x41ILED_NO_RESULT\x10\x14\x12\x14\n\x10NEEDS_REFINEMENT\x10\x1e\x12\x19\n\x15\x46\x41ILED_NOT_AUTHORIZED\x10(\x12\x12\n\x0eSTATUS_DEDUPED\x10\x32\x12\x14\n\x10VERSION_MISMATCH\x10<b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,44 +22,44 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'PlaceResponse_pb2', _global
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _globals['_STATUS']._serialized_start=3093
-  _globals['_STATUS']._serialized_end=3297
+  _globals['_STATUS']._serialized_start=3210
+  _globals['_STATUS']._serialized_end=3414
   _globals['_PLACERESPONSE']._serialized_start=51
-  _globals['_PLACERESPONSE']._serialized_end=3090
-  _globals['_PLACERESPONSE_PLACEGLOBALRESULT']._serialized_start=432
-  _globals['_PLACERESPONSE_PLACEGLOBALRESULT']._serialized_end=597
-  _globals['_PLACERESPONSE_PLACEGLOBALRESULT_REVERSEGEOCODINGRESULT']._serialized_start=556
-  _globals['_PLACERESPONSE_PLACEGLOBALRESULT_REVERSEGEOCODINGRESULT']._serialized_end=597
-  _globals['_PLACERESPONSE_DATASETABSTATUS']._serialized_start=599
-  _globals['_PLACERESPONSE_DATASETABSTATUS']._serialized_end=636
-  _globals['_PLACERESPONSE_MAPSRESULT']._serialized_start=638
-  _globals['_PLACERESPONSE_MAPSRESULT']._serialized_end=749
-  _globals['_PLACERESPONSE_PLACE']._serialized_start=752
-  _globals['_PLACERESPONSE_PLACE']._serialized_end=1025
-  _globals['_PLACERESPONSE_COMPONENT']._serialized_start=1028
-  _globals['_PLACERESPONSE_COMPONENT']._serialized_end=1273
-  _globals['_PLACERESPONSE_COMPONENTVALUE']._serialized_start=1275
-  _globals['_PLACERESPONSE_COMPONENTVALUE']._serialized_end=1357
-  _globals['_PLACERESPONSE_ADDRESSOBJECT']._serialized_start=1359
-  _globals['_PLACERESPONSE_ADDRESSOBJECT']._serialized_end=1441
-  _globals['_PLACERESPONSE_ADDRESSOBJECT_']._serialized_start=1444
-  _globals['_PLACERESPONSE_ADDRESSOBJECT_']._serialized_end=1659
-  _globals['_PLACERESPONSE_UNKNOWN3']._serialized_start=1661
-  _globals['_PLACERESPONSE_UNKNOWN3']._serialized_end=1725
-  _globals['_PLACERESPONSE_UNKNOWN4']._serialized_start=1727
-  _globals['_PLACERESPONSE_UNKNOWN4']._serialized_end=1811
-  _globals['_PLACERESPONSE_ADDRESS']._serialized_start=1814
-  _globals['_PLACERESPONSE_ADDRESS']._serialized_end=2105
-  _globals['_PLACERESPONSE_ADDRESS1']._serialized_start=2107
-  _globals['_PLACERESPONSE_ADDRESS1']._serialized_end=2213
-  _globals['_PLACERESPONSE_ADDRESSCOMPONENTS']._serialized_start=2216
-  _globals['_PLACERESPONSE_ADDRESSCOMPONENTS']._serialized_end=2493
-  _globals['_PLACERESPONSE_FORMATTEDADDRESSCOMPONENTS']._serialized_start=2496
-  _globals['_PLACERESPONSE_FORMATTEDADDRESSCOMPONENTS']._serialized_end=2784
-  _globals['_PLACERESPONSE_UNKNOWN15']._serialized_start=2786
-  _globals['_PLACERESPONSE_UNKNOWN15']._serialized_end=2883
-  _globals['_PLACERESPONSE_MAPSIDENTIFIER']._serialized_start=2885
-  _globals['_PLACERESPONSE_MAPSIDENTIFIER']._serialized_end=2959
-  _globals['_PLACERESPONSE_SHARDEDID']._serialized_start=2962
-  _globals['_PLACERESPONSE_SHARDEDID']._serialized_end=3090
+  _globals['_PLACERESPONSE']._serialized_end=3207
+  _globals['_PLACERESPONSE_PLACEGLOBALRESULT']._serialized_start=458
+  _globals['_PLACERESPONSE_PLACEGLOBALRESULT']._serialized_end=623
+  _globals['_PLACERESPONSE_PLACEGLOBALRESULT_REVERSEGEOCODINGRESULT']._serialized_start=582
+  _globals['_PLACERESPONSE_PLACEGLOBALRESULT_REVERSEGEOCODINGRESULT']._serialized_end=623
+  _globals['_PLACERESPONSE_DATASETABSTATUS']._serialized_start=625
+  _globals['_PLACERESPONSE_DATASETABSTATUS']._serialized_end=662
+  _globals['_PLACERESPONSE_MAPSRESULT']._serialized_start=664
+  _globals['_PLACERESPONSE_MAPSRESULT']._serialized_end=775
+  _globals['_PLACERESPONSE_PLACE']._serialized_start=778
+  _globals['_PLACERESPONSE_PLACE']._serialized_end=1051
+  _globals['_PLACERESPONSE_COMPONENT']._serialized_start=1054
+  _globals['_PLACERESPONSE_COMPONENT']._serialized_end=1299
+  _globals['_PLACERESPONSE_COMPONENTVALUE']._serialized_start=1301
+  _globals['_PLACERESPONSE_COMPONENTVALUE']._serialized_end=1383
+  _globals['_PLACERESPONSE_ADDRESSOBJECT']._serialized_start=1385
+  _globals['_PLACERESPONSE_ADDRESSOBJECT']._serialized_end=1467
+  _globals['_PLACERESPONSE_ADDRESSOBJECT_']._serialized_start=1470
+  _globals['_PLACERESPONSE_ADDRESSOBJECT_']._serialized_end=1682
+  _globals['_PLACERESPONSE_UNKNOWN3']._serialized_start=1684
+  _globals['_PLACERESPONSE_UNKNOWN3']._serialized_end=1748
+  _globals['_PLACERESPONSE_UNKNOWN4']._serialized_start=1750
+  _globals['_PLACERESPONSE_UNKNOWN4']._serialized_end=1834
+  _globals['_PLACERESPONSE_PLACE_']._serialized_start=1837
+  _globals['_PLACERESPONSE_PLACE_']._serialized_end=2112
+  _globals['_PLACERESPONSE_ADDRESS']._serialized_start=2114
+  _globals['_PLACERESPONSE_ADDRESS']._serialized_end=2224
+  _globals['_PLACERESPONSE_ADDRESSCOMPONENTS']._serialized_start=2227
+  _globals['_PLACERESPONSE_ADDRESSCOMPONENTS']._serialized_end=2555
+  _globals['_PLACERESPONSE_MARKUPADDRESSCOMPONENTS']._serialized_start=2558
+  _globals['_PLACERESPONSE_MARKUPADDRESSCOMPONENTS']._serialized_end=2879
+  _globals['_PLACERESPONSE_UNKNOWN15']._serialized_start=2881
+  _globals['_PLACERESPONSE_UNKNOWN15']._serialized_end=3000
+  _globals['_PLACERESPONSE_MAPSIDENTIFIER']._serialized_start=3002
+  _globals['_PLACERESPONSE_MAPSIDENTIFIER']._serialized_end=3076
+  _globals['_PLACERESPONSE_SHARDEDID']._serialized_start=3079
+  _globals['_PLACERESPONSE_SHARDEDID']._serialized_end=3207
 # @@protoc_insertion_point(module_scope)
