@@ -10,12 +10,15 @@ The reasonably stable parts of this have been integrated into my library [sk-zk/
 Panoramas can be found as XYZ tiles with z=17. Here's how you can fetch a tile:
 
 ```python
+import math
 from lookaround import get_coverage_tile_by_latlon
 
 # fetches all panoramas on the tile which contains this coordinate
 panos = get_coverage_tile_by_latlon(46.529426, 10.455443)
 print(len(panos))
-print(panos[0].__dict__)
+print(panos[0].panoid, panos[0].build_id)
+print(panos[0].lat, panos[0].lon)
+print(math.degrees(panos[0].heading))
 ```
 
 Alternatively, if you've got tile coordinates already, you can call `get_coverage_tile` instead.
