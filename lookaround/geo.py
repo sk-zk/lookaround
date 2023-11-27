@@ -5,6 +5,7 @@ import pyproj
 from pyproj import Transformer
 from scipy.spatial.transform import Rotation
 
+
 pyproj.network.set_network_enabled(active=True)
 TILE_SIZE = 256
 tf_web_mercator_to_ecef = Transformer.from_crs(3857, 4978)
@@ -135,50 +136,40 @@ def convert_pano_orientation(lat: float, lon: float, altitude: float,
     :param raw_roll: Raw roll value from the API.
     :return: Converted heading/pitch/roll angles in radians.
     """
-    yaw = (float(raw_yaw) / 16383.0) * math.tau
-    pitch = (float(raw_pitch) / 16383.0) * math.tau
-    roll = (float(raw_roll) / 16383.0) * math.tau
-    ecef_pos = tf_wgs84_to_ecef.transform(lat, lon, altitude)
+    yaw = (raw_yaw / 16383.0) * math.tau
+    pitch = (raw_pitch / 16383.0) * math.tau
+    roll = (raw_roll / 16383.0) * math.tau
 
     rot = Rotation.from_euler("xyz", (yaw, pitch, roll))
     rot *= Rotation.from_quat((-0.5, -0.5, 0.5, 0.5))
     quat = rot.as_quat()
     quat2 = quat[3], -quat[2], -quat[0], quat[1]
-    conv_yaw, conv_pitch, conv_roll = _from_rigid_transform_ecef_no_offset(ecef_pos, quat2)
+    conv_yaw, conv_pitch, conv_roll = _from_rigid_transform_ecef_no_offset(lat, lon, quat2)
     return conv_yaw, conv_pitch, conv_roll
 
 
-def _from_rigid_transform_ecef_no_offset(position: Tuple[float, float, float], 
-                                          rotation: Tuple[float, float, float, float]) -> Tuple[float, float, float]:
+def _from_rigid_transform_ecef_no_offset(lat: float, lon: float,
+                                         rotation: Tuple[float, float, float, float]) -> Tuple[float, float, float]:
     """
-    via gdc::CameraFrame<>::fromRigidTransformEcefNoOffset() in VectorKit
+    via gdc::CameraFrame<>::fromRigidTransformEcefNoOffset() in VectorKit.
+    I optimized out the ECEF coords, but I've decided to keep the name
     """
-    _, frame_rot = _create_local_ecef_frame(position)
+    frame_rot = _create_local_ecef_basis(lat, lon)
     mult = Rotation.from_matrix(frame_rot) * Rotation.from_quat(rotation)
     local_rot = mult.as_euler("xzy")
     return local_rot[2], -local_rot[0], -local_rot[1]
 
 
-def _create_local_ecef_frame(position: Tuple[float, float, float]) \
-        -> Tuple[Tuple[float, float, float], np.ndarray]:
-    """
-    via gdc::CameraFrame<>::createLocalEcefFrame() in VectorKit
-    """
-    rot_matrix = _create_local_ecef_basis(*position)
-    return position, rot_matrix
-
-
-def _create_local_ecef_basis(x: float, y: float, z: float) -> np.ndarray:
+def _create_local_ecef_basis(lat: float, lon: float) -> np.ndarray:
     """
     via gdc::CameraFrame<>::createLocalEcefBasis() in VectorKit
     """
-    longitude = np.arctan2(y, x)
-    latitude = np.arctan2(z, np.sqrt(x**2 + y**2))
-
-    cos_lat = np.cos(latitude)
-    sin_lat = np.sin(latitude)
-    cos_lon = np.cos(longitude)
-    sin_lon = np.sin(longitude)
+    lat = np.radians(lat)
+    lon = np.radians(lon)
+    cos_lat = np.cos(lat)
+    sin_lat = np.sin(lat)
+    cos_lon = np.cos(lon)
+    sin_lon = np.sin(lon)
 
     ecef_basis = np.array([
         [-sin_lon, cos_lon, 0],
