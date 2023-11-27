@@ -154,7 +154,7 @@ def _from_rigid_transform_ecef_no_offset(position: Tuple[float, float, float],
     via gdc::CameraFrame<>::fromRigidTransformEcefNoOffset() in VectorKit
     """
     _, frame_rot = _create_local_ecef_frame(position)
-    mult = Rotation.from_quat(frame_rot) * Rotation.from_quat(rotation)
+    mult = Rotation.from_matrix(frame_rot) * Rotation.from_quat(rotation)
     local_rot = mult.as_euler("xzy")
     return local_rot[2], -local_rot[0], -local_rot[1]
 
@@ -165,21 +165,20 @@ def _create_local_ecef_frame(position: Tuple[float, float, float]) \
     via gdc::CameraFrame<>::createLocalEcefFrame() in VectorKit
     """
     rot_matrix = _create_local_ecef_basis(*position)
-    quaternion = Rotation.from_matrix(rot_matrix).as_quat()
-    return position, quaternion
+    return position, rot_matrix
 
 
 def _create_local_ecef_basis(x: float, y: float, z: float) -> np.ndarray:
     """
     via gdc::CameraFrame<>::createLocalEcefBasis() in VectorKit
     """
-    longitude = math.atan2(y, x)
-    latitude = math.atan2(z, np.sqrt(x**2 + y**2))
+    longitude = np.arctan2(y, x)
+    latitude = np.arctan2(z, np.sqrt(x**2 + y**2))
 
-    cos_lat = math.cos(latitude)
-    sin_lat = math.sin(latitude)
-    cos_lon = math.cos(longitude)
-    sin_lon = math.sin(longitude)
+    cos_lat = np.cos(latitude)
+    sin_lat = np.sin(latitude)
+    cos_lon = np.cos(longitude)
+    sin_lon = np.sin(longitude)
 
     ecef_basis = np.array([
         [-sin_lon, cos_lon, 0],
