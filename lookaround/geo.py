@@ -141,10 +141,13 @@ def convert_pano_orientation(lat: float, lon: float, altitude: float,
     roll = (raw_roll / 16383.0) * math.tau
 
     rot = Rotation.from_euler("xyz", (yaw, pitch, roll))
-    rot *= Rotation.from_quat((-0.5, -0.5, 0.5, 0.5))
+    rot *= Rotation.from_quat((0.5, 0.5, -0.5, -0.5))
     quat = rot.as_quat()
     quat2 = quat[3], -quat[2], -quat[0], quat[1]
-    conv_yaw, conv_pitch, conv_roll = _from_rigid_transform_ecef_no_offset(lat, lon, quat2)
+    conv_roll, conv_pitch, conv_yaw = \
+        Rotation.from_euler("xyz", 
+                            _from_rigid_transform_ecef_no_offset(lat, lon, quat2))\
+                .as_euler("zyx")
     return conv_yaw, conv_pitch, conv_roll
 
 
@@ -156,8 +159,8 @@ def _from_rigid_transform_ecef_no_offset(lat: float, lon: float,
     """
     frame_rot = _create_local_ecef_basis(lat, lon)
     mult = Rotation.from_matrix(frame_rot) * Rotation.from_quat(rotation)
-    local_rot = mult.as_euler("xzy")
-    return local_rot[2], -local_rot[0], -local_rot[1]
+    local_rot = mult.as_euler("zxy")
+    return local_rot[2], -local_rot[1], -local_rot[0]
 
 
 def _create_local_ecef_basis(lat: float, lon: float) -> np.ndarray:
