@@ -155,8 +155,8 @@ def _from_rigid_transform_ecef_no_offset(lat: float, lon: float,
     via gdc::CameraFrame<>::fromRigidTransformEcefNoOffset() in VectorKit.
     I optimized out the ECEF coords, but I've decided to keep the name
     """
-    frame_rot = _create_local_ecef_basis(lat, lon)
-    mult = Rotation.from_matrix(frame_rot) * Rotation.from_quat(rotation)
+    ecef_basis = _create_local_ecef_basis(lat, lon)
+    mult = Rotation.from_matrix(ecef_basis) * Rotation.from_quat(rotation)
     local_rot = mult.as_euler("zxy")
     return local_rot[2], -local_rot[1], -local_rot[0]
 
