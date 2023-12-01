@@ -120,8 +120,8 @@ def get_geoid_height(lat: float, lon: float) -> float:
     return -geoid_height
 
 
-def convert_pano_orientation(lat: float, lon: float, altitude: float,
-                             raw_yaw: int, raw_pitch: int, raw_roll: int) -> Tuple[float, float, float]:
+def convert_pano_orientation(lat: float, lon: float, raw_yaw: int, raw_pitch: int, raw_roll: int) \
+        -> Tuple[float, float, float]:
     """
     Converts the raw yaw/pitch/roll of a panorama returned by the API to the
     rotation to apply to the photosphere.

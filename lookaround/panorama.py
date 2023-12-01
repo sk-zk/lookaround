@@ -32,9 +32,8 @@ class LookaroundPanorama:
             
     def _set_orientation(self):
         if not self._heading:
-            self._set_altitude_and_elevation()
             self._heading, self._pitch, self._roll = \
-                geo.convert_pano_orientation(self.lat, self.lon, self._altitude, *self.raw_orientation)
+                geo.convert_pano_orientation(self.lat, self.lon, *self.raw_orientation)
 
     @property
     def elevation(self):
