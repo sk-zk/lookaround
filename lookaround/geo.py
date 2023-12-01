@@ -126,8 +126,6 @@ def convert_pano_orientation(lat: float, lon: float, altitude: float,
     Converts the raw yaw/pitch/roll of a panorama returned by the API to the
     rotation to apply to the photosphere.
 
-    The heading that comes out of this function looks correct, but the pitch and roll still aren't right.
-
     :param lat: Latitude of the panorama.
     :param lon: Longitude of the panorama.
     :param altitude: GPS altitude (not height above MSL) of the panorama.
