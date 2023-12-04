@@ -7,7 +7,7 @@ message PlaceResponse {
   int32 status = 1;
   RequestType request_type = 2;
   PlaceGlobalResult global_result = 3;
-  //Place legacy_place_result = 4;
+  Place legacy_place_result = 4;
   repeated string display_language = 5;
   repeated string display_region = 6;
   repeated string spoken_language = 7;
@@ -53,24 +53,283 @@ message PlaceResponse {
   }
 
   message Component {
-    int32 type = 1;
+    ComponentType type = 1;
     int32 status = 2;
     int32 ttl = 4;
     int32 start_index = 5;
     bool values_available = 6;
-    //Attribution attribution = 7;
+    Attribution attribution = 7;
     repeated ComponentValue value = 8;
     repeated string version_domain = 9;
     int32 version = 10;
-    //Source source = 11;
+    Source source = 11;
     int32 cache_control = 12;
     uint64 component_id = 13;
-    //repeated Attribution commingled_attribution = 14;
+    repeated Attribution commingled_attribution = 14;
+  }
+
+  message Attribution {
+    string vendor_id = 1;
+    string external_item_id = 2;
+    string external_component_id = 3;
+    repeated string attribution_url = 4;
+    string action_url_component = 5;
   }
 
   message ComponentValue {
-    // TODO everything else
+    Entity entity = 1;
+    //PlaceInfo place_info = 2;
+    //RoadAccessInfo access_info = 3;
+    //Bounds bounds = 4;
+    Address address = 5;
+    Rating rating = 6;
+    //Review review = 7;
+    //Photo photo = 8;
+    //Hours hours = 9;
+    //TransitInfo transit_info = 10;
+    //TransitSchedule transit_schedule = 11;
+    //ETA eta = 12;
+    //Flyover flyover = 13;
+    //RawAttribute raw_attribute = 14;
+    //Amenities amenities = 15;
+    StyleAttributes style_attributes = 16;
+    //TransitIncident transit_incident = 20;
+    //TextBlock text_block = 22;
+    //Factoid factoid = 23;
+    //TransitAttribution transit_attribution = 24;
+    //BusinessClaim business_claim = 25;
+    //CaptionedPhoto captioned_photo = 26;
+    //TransitInfoSnippet transit_info_snippet = 27;
+    //ExternalAction external_action = 29;
+    ResultSnippet result_snippet = 30;
     AddressObject address_object = 31;
+    //SimpleRestaurantMenuText simple_restaurant_menu_text = 32;
+    //RestaurantReservationLink restaurant_reservation_link = 33;
+    //SpatialLookupResult spatial_lookup_result = 34;
+    //Tip tip = 36;
+    //PlacecardURL placecard_url = 37;
+    //AssociatedApp associated_app = 38;
+    //MessageLink message_link = 39;
+    //QuickLink quick_link = 40;
+    //Rap rap = 41;
+    //LocationEvent location_event = 42;
+    //VenueInfo venue_info = 48;
+    //ContainedPlace contained_place = 50;
+    //WifiFingerprint wifi_fingerprint = 51;
+    //Icon icon = 52;
+    //PriceDescription price_description = 53;
+    //BrowseCategories browse_categories = 54;
+    Storefront storefront = 55;
+    //GroundViewLabel ground_view_label = 56;
+    //AnnotatedItemList annotated_item_list = 57;
+    //PoiEvent poi_event = 58;
+    StorefrontPresentation storefront_presentation = 59;
+    //PlacecardLayoutConfiguration placecard_layout_configuration = 60;
+    //PrototypeContainer prototype_container = 61;
+    //TransitVehiclePosition transit_vehicle_position = 62;
+    //LinkedService linked_service = 63;
+    BusinessHours business_hours = 64;
+    //PlaceCollection place_collection = 65;
+    //RelatedPlace related_place = 66;
+    //TransitTripStop transit_trip_stop = 67;
+    //TransitTripStopTime transit_trip_stop_time = 68;
+    //TransitTripGeometry transit_trip_geometry = 69;
+    //BrowseCategories place_browse_categories = 70;
+    //Publisher publisher = 71;
+    //MiniBrowseCategories mini_place_browse_categories = 72;
+    //PlaceQuestionnaireResult place_questionnaire = 73;
+    //PlaceCollectionItem place_collection_item = 74;
+    //CollectionIds collection_ids = 76;
+    //ISO3166Code iso_3166_code = 77;
+    //Amenities vendor_amenities = 78;
+    //TransitNearbySchedule transit_nearby_schedule = 79;
+    //StorefrontFaces storefront_faces = 81;
+    //GuideGroup guide_group = 82;
+    //ContainmentPlace containment_place = 83;
+    //CategorizedPhotos categorized_photos = 84;
+    //ExploreGuides explore_guides = 85;
+    //About about = 86;
+    //LabelGeometry label_geometry = 87;
+    //EnhancedPlacement enhanced_placement = 88;
+    //TemplatePlace template_place = 89;
+    //TransitPaymentMethodInfo transit_payment_method_info = 91;
+    //BusinessAssets business_assets = 92;
+    //EnrichmentInfo enrichment_info = 93;
+    //ActionData action_data = 94;
+    //EnrichmentData enrichment_data = 95;
+    //POIClaim poi_claim = 96;
+  }
+
+  message Entity {
+    EntityType type = 1;
+    string telephone = 2;
+    repeated string alt_telephone = 3;
+    string fax = 4;
+    repeated string alt_fax = 5;
+    string url = 6;
+    repeated string alt_url = 7;
+    bool is_permanently_closed = 8;
+    bool is_disputed = 9;
+    repeated LocalizedString name = 10;
+    repeated LocalizedString spoken_name = 11;
+    repeated Category category = 12;
+    bool telephone_ads_opt_out = 14;
+    repeated bool alt_telephone_ads_opt_out = 15;
+    bool is_standalone_brand = 16;
+    PlaceDisplayStyle display_style = 17;
+    PlaceSearchSection search_section = 18;
+    PlaceDisplayType display_type = 19;
+    uint64 brand_muid = 20;
+    int32 capacity = 21;
+    repeated int32 place_lookup_category = 22;
+    LocalizedString secondary_name = 23;
+    LocalizedString secondary_spoken_name = 24;
+    StyleAttributes style_attributes = 25;
+    string wallet_category_id = 26;
+    string maps_category_id = 27;
+    bool enable_rap_lightweight_feedback = 28;
+    repeated string alternate_searchable_name = 29;
+    uint64 global_brand_muid = 30;
+    uint64 building_id = 31;
+    uint64 area_highlight_id = 32;
+
+    enum EntityType {
+      UNKNOWN_PLACE_TYPE = 0;
+      COUNTRY = 1;
+      ADMINISTRATIVE_AREA = 2;
+      SUB_ADMINISTRATIVE_AREA = 4;
+      LOCALITY = 10;
+      TIME_ZONE = 35;
+      SUB_LOCALITY = 43;
+      OCEAN = 44;
+      AOI = 45;
+      INLAND_WATER = 46;
+      BUSINESS = 47;
+      ISLAND = 48;
+      STREET = 49;
+      ADMIN = 50;
+      POSTAL = 51;
+      INTERSECTION = 54;
+      BUILDING = 55;
+      ADDRESS = 57;
+      CONTINENT = 61;
+      REGION = 63;
+      DIVISION = 64;
+      PHYSICAL_FEATURE = 65;
+    }
+  }
+
+  message LocalizedString {
+    string locale = 1;
+    string string_value = 3;
+  }
+
+  message Category {
+    int32 level = 1;
+    repeated LocalizedString localized_name = 3;
+    string name = 4;
+    string event_category_id = 5;
+  }
+
+  enum PlaceDisplayStyle {
+    PLACE_DISPLAY_STYLE_UNKNOWN = 0;
+    PLACE_DISPLAY_STYLE_FULL = 1;
+    PLACE_DISPLAY_STYLE_SHORT = 2;
+  }
+
+  enum PlaceSearchSection {
+    PLACE_SEARCH_SECTION_UNKNOWN = 0;
+    PLACE_SEARCH_SECTION_MAPS = 1;
+    PLACE_SEARCH_SECTION_BUSINESS = 2;
+  }
+
+  enum PlaceDisplayType {
+    UNKNOWN = 0;
+    BUSINESS = 1;
+    REGION = 2;
+    ADDRESS = 3;
+    TRANSIT = 4;
+    BRAND = 5;
+  }
+
+  message StyleAttributes {
+    repeated StyleAttribute style_attribute = 1;
+  }
+
+  message StyleAttribute {
+    int32 key = 1;
+    int32 value = 2;
+  }
+
+  message Source {
+    int32 result_provider_id = 1;
+    string source_id = 2;
+    string version = 3;
+  }
+
+  message BusinessHours {
+    repeated Hours weekly_hours = 1;
+    int32 start = 2;
+    int32 end = 3;
+    LocalizedString message = 4;
+    LocalizedString short_message = 5;
+    int32 hours_type = 6;
+    HoursThreshold hours_threshold = 7;
+  }
+
+  message Hours {
+    repeated Day day = 1;
+    repeated LocalTimeRange time_range = 2;
+    Hours hours_threshold = 3;
+  }
+
+  enum Day {
+    EVERYDAY = 0;
+    SUNDAY = 1;
+    MONDAY = 2;
+    TUESDAY = 3;
+    WEDNESDAY = 4;
+    THURSDAY = 5;
+    FRIDAY = 6;
+    SATURDAY = 7;
+  }
+
+  message LocalTimeRange {
+    int32 start = 1;
+    int32 end = 2;
+  }
+
+  message HoursThreshold {
+    int32 opening_soon_message_threshold_second = 1;
+    int32 closing_soon_message_threshold_second = 2;
+  }
+
+  message ResultSnippet {
+    string name = 1;
+    string category = 2;
+    Rating price_range = 3;
+    string location_string = 5;
+    int32 distance_display_threshold = 6;
+    //repeated ChildPlace child_place = 8;
+    //PriceDescription price_description = 9;
+    //repeated ChildItem child_item = 10;
+  }
+
+  message Rating {
+    int32 rating_type = 1;
+    double score = 2;
+    double max_score = 3;
+    int32 num_ratings_used_for_score = 4;
+    repeated LocalizedString apple_rating_category = 5;
+  }
+
+  message Storefront {
+    repeated StorefrontBundleId bundle = 4;
+  }
+
+  message StorefrontBundleId {
+    uint64 id = 1;
+    uint64 timestamp = 2;
   }
 
   message AddressObject {
@@ -157,18 +416,6 @@ message PlaceResponse {
     string full_thoroughfare_and_locality = 5;
     string locality_2 = 6;
     string ward = 10;
-  }
-
-  message MapsIdentifier {
-    ShardedId sharded_id = 1;
-  }
-
-  message ShardedId {
-    uint64 muid = 1;
-    LatLng center = 2;
-    int32 result_provider_id = 3;
-    int32 basemap_id = 4;
-    int32 unknown0 = 5;
   }
 }
 

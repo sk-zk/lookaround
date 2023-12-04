@@ -6,7 +6,7 @@ from .ticket import make_ticket_request
 from lookaround.proto import PlaceRequest_pb2, PlaceResponse_pb2, Shared_pb2
 
 
-def _reverse_geocode_build_pb_request(lat: float, lon: float, display_languages: List[str]):
+def _build_pb_request(lat: float, lon: float, display_languages: List[str]):
     pr = PlaceRequest_pb2.PlaceRequest()
 
     pr.display_language.extend(display_languages)
@@ -20,19 +20,17 @@ def _reverse_geocode_build_pb_request(lat: float, lon: float, display_languages:
     pr.place_request_parameters.reverse_geocoding_parameters.extended_location.vertical_accuracy = -1
     pr.place_request_parameters.reverse_geocoding_parameters.extended_location.heading = -1
 
-    # specify what we want the server to return; 31 is the address
     rc = PlaceRequest_pb2.ComponentInfo()
-    rc.type = 31
+    rc.type = Shared_pb2.ComponentType.ADDRESS_OBJECT
     rc.count = 1
     pr.request_component.append(rc)
     return pr
 
 
 def reverse_geocode(lat: float, lon: float, display_language: List[str], session: Session = None):
-    pb_request = _reverse_geocode_build_pb_request(lat, lon, display_language)
-
-    response = make_ticket_request(pb_request.SerializeToString(), session)
-    place_response = PlaceResponse_pb2.PlaceResponse()
-    place_response.ParseFromString(response)
-    address = place_response.maps_result.place.component[0].value[0].address_object.address_object.place.address
+    pb_request = _build_pb_request(lat, lon, display_language)
+    pb_response = make_ticket_request(pb_request.SerializeToString(), session)
+    response = PlaceResponse_pb2.PlaceResponse()
+    response.ParseFromString(pb_response)
+    address = response.maps_result.place.component[0].value[0].address_object.address_object.place.address
     return list(address.formatted_address)

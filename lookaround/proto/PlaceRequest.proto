@@ -107,6 +107,12 @@ message PlaceRequest {
         //AutocompleteParameters autocomplete_parameters = 10;
         //etc. etc. etc.
         //TODO Add all this stuff
+        MapsIdentifierPlaceLookupParameters maps_identifier_place_lookup_parameters = 23;
+        message MapsIdentifierPlaceLookupParameters {
+            uint32 result_provider_id = 1;
+            repeated MapsIdentifier maps_id = 2;
+            bool enable_partial_clientization = 4;
+        }
     }
 
     message Location {
@@ -125,7 +131,7 @@ message PlaceRequest {
 }
 
 message ComponentInfo {
-    int32 type = 1;
+    ComponentType type = 1;
     int32 start_index = 2;
     int32 count = 3;
     ComponentFilter component_filter = 5;
