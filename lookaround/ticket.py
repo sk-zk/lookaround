@@ -17,7 +17,7 @@ class TicketRequestHeader:
     Represents the header of a ticket request.
     """
     version_maybe: int = 1
-    language: str = "en-US"
+    locale: str = "en"
     app_identifier: str = "com.apple.geod"
     os_version: str = "11.7.5.20G1225"
     unknown: int = 60  # possibly a function ID
@@ -66,7 +66,7 @@ def serialize_ticket_request(header: TicketRequestHeader, payload: bytes) -> byt
     """
     w = BinaryWriter(io.BytesIO())
     w.write_uint2_be(header.version_maybe)
-    _write_pascal_string_be(w, header.language)
+    _write_pascal_string_be(w, header.locale)
     _write_pascal_string_be(w, header.app_identifier)
     _write_pascal_string_be(w, header.os_version)
     w.write_uint4_be(header.unknown)
