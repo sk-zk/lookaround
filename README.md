@@ -2,9 +2,6 @@ In which I reverse-engineer Apple Look Around and create a Python module for it.
 
 The reasonably stable parts of this have been integrated into my library [sk-zk/streetlevel](https://github.com/sk-zk/streetlevel/), and the experimenting happens over here.
 
-## Recent changes
-* Pitch and roll offsets are finally included.
-
 ## Coverage tiles
 Panoramas can be found as XYZ tiles with z=17. Here's how you can fetch a tile:
 
@@ -55,10 +52,9 @@ for face in range(0, 6):
         f.write(image)
 ```
 
-The side faces are equirectangular and can be stitched together easily, but the other two use a different projection
-which I'm struggling to deal with.
-
-Images are in HEIC format, so you may need to install some plugins to view them.
+Images are in HEIC format, so you may need to install some plugins to view them. See [here](https://streetlevel.readthedocs.io/en/v0.6.5/streetlevel.lookaround.html)
+for an explanation of how you can render these panoramas, and [here](https://github.com/sk-zk/lookaround-map/blob/main/js/viewer/LookaroundAdapter.js#L145)
+for my code which builds a mesh in Three.js.
 
 ## m / mt
 There are two additional files requested by the Apple Maps client, `/m/<zoom>` and `/mt/7`.
