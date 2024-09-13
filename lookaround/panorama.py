@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Tuple
+from typing import Any, Tuple, List
 
 from . import geo
 
@@ -65,3 +65,11 @@ class LookaroundPanorama:
     def __str__(self):
         return f"{self.panoid}/{self.build_id} ({self.lat:.6}, {self.lon:.6}) " \
                f"[{self.date.strftime('%Y-%m-%d')}]"
+
+
+@dataclass
+class CoverageTile:
+    x: int
+    y: int
+    panos: List[LookaroundPanorama]
+    last_modified: datetime

@@ -10,11 +10,13 @@ import math
 from lookaround import get_coverage_tile_by_latlon
 
 # fetches all panoramas on the tile which contains this coordinate
-panos = get_coverage_tile_by_latlon(46.529426, 10.455443)
-print(len(panos))
-print(panos[0].panoid, panos[0].build_id)
-print(panos[0].lat, panos[0].lon)
-print(math.degrees(panos[0].heading))
+tile = get_coverage_tile_by_latlon(46.529426, 10.455443)
+first = tile.panos[0]
+
+print(len(tile.panos))
+print(first.panoid, first.build_id)
+print(first.lat, first.lon)
+print(math.degrees(first.heading))
 ```
 
 Alternatively, if you've got tile coordinates already, you can call `get_coverage_tile` instead.
@@ -42,13 +44,14 @@ Each face can be downloaded in eight different resolutions, where 0 is the large
 from lookaround import get_coverage_tile_by_latlon, get_pano_face
 from lookaround.auth import Authenticator
 
-panos = get_coverage_tile_by_latlon(46.52943, 10.45544)
+tile = get_coverage_tile_by_latlon(46.52943, 10.45544)
+first = tile.panos[0]
 
 auth = Authenticator()
 zoom = 2
 for face in range(0, 6):
-    image = get_pano_face(panos[0].panoid, panos[0].build_id, face, zoom, auth)
-    with open(f"{panos[0].panoid}_{face}_{zoom}.heic", "wb") as f:
+    image = get_pano_face(first.panoid, first.build_id, face, zoom, auth)
+    with open(f"{first.panoid}_{face}_{zoom}.heic", "wb") as f:
         f.write(image)
 ```
 

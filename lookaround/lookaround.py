@@ -1,12 +1,14 @@
+from datetime import datetime
+
 import requests
 from requests import Session
-from typing import List
+from typing import List, Tuple
 import aiohttp
 from aiohttp import ClientSession
 
 from lookaround.proto import GroundMetadataTile_pb2
 from .auth import Authenticator
-from .panorama import LookaroundPanorama
+from .panorama import LookaroundPanorama, CoverageTile
 from . import geo
 
 COVERAGE_TILE_ENDPOINT = "https://gspe76-ssl.ls.apple.com/api/tile?"
@@ -24,17 +26,25 @@ async def get_coverage_tile_by_latlon_async(lat: float, lon: float, session: Cli
     return await get_coverage_tile_async(x, y, session)
 
 
-def get_coverage_tile(tile_x: int, tile_y: int, session: Session = None) -> List[LookaroundPanorama]:
-    tile = _get_coverage_tile_raw(tile_x, tile_y, session=session)
-    return _parse_coverage_tile(tile, tile_x, tile_y)
+def get_coverage_tile(tile_x: int, tile_y: int, session: Session = None) -> CoverageTile:
+    tile, etag = _get_coverage_tile_raw(tile_x, tile_y, session=session)
+    etag = etag[1:-1]
+    return CoverageTile(tile_x,
+                        tile_y,
+                        _get_panos_from_coverage_tile(tile, tile_x, tile_y),
+                        datetime.fromtimestamp(int(etag)))
 
 
-async def get_coverage_tile_async(tile_x: int, tile_y: int, session: ClientSession = None) -> List[LookaroundPanorama]:
-    tile = await _get_coverage_tile_raw_async(tile_x, tile_y, session)
-    return _parse_coverage_tile(tile, tile_x, tile_y)
+async def get_coverage_tile_async(tile_x: int, tile_y: int, session: ClientSession = None) -> CoverageTile:
+    tile, etag = await _get_coverage_tile_raw_async(tile_x, tile_y, session)
+    etag = etag[1:-1]
+    return CoverageTile(tile_x,
+                        tile_y,
+                        _get_panos_from_coverage_tile(tile, tile_x, tile_y),
+                        datetime.fromtimestamp(int(etag)))
 
 
-def _parse_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTile, tile_x: int, tile_y: int) \
+def _get_panos_from_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTile, tile_x: int, tile_y: int) \
         -> List[LookaroundPanorama]:
     panos = []
     for pano in tile.pano:
@@ -63,11 +73,11 @@ def _parse_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTile, tile_x
 
 
 def _get_coverage_tile_raw(tile_x: int, tile_y: int, session: Session = None) \
-        -> GroundMetadataTile_pb2.GroundMetadataTile:
+        -> Tuple[GroundMetadataTile_pb2.GroundMetadataTile, int]:
     headers = _create_coverage_tile_request_headers(tile_x, tile_y)
     requester = session if session else requests
     response = requester.get(COVERAGE_TILE_ENDPOINT, headers=headers)
-    return _parse_coverage_tile_response(response.content)
+    return _parse_coverage_tile_response(response.content), response.headers["ETag"]
 
 
 async def _get_coverage_tile_raw_async(tile_x: int, tile_y: int, session: ClientSession = None) \
