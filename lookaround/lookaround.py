@@ -27,7 +27,7 @@ async def get_coverage_tile_by_latlon_async(lat: float, lon: float, session: Cli
 
 
 def get_coverage_tile(tile_x: int, tile_y: int, session: Session = None) -> CoverageTile:
-    tile, etag = _get_coverage_tile_raw(tile_x, tile_y, session=session)
+    tile, etag = get_coverage_tile_raw(tile_x, tile_y, session=session)
     etag = etag[1:-1]
     return CoverageTile(tile_x,
                         tile_y,
@@ -36,7 +36,7 @@ def get_coverage_tile(tile_x: int, tile_y: int, session: Session = None) -> Cove
 
 
 async def get_coverage_tile_async(tile_x: int, tile_y: int, session: ClientSession = None) -> CoverageTile:
-    tile, etag = await _get_coverage_tile_raw_async(tile_x, tile_y, session)
+    tile, etag = await get_coverage_tile_raw_async(tile_x, tile_y, session)
     etag = etag[1:-1]
     return CoverageTile(tile_x,
                         tile_y,
@@ -72,7 +72,7 @@ def _get_panos_from_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTil
     return panos
 
 
-def _get_coverage_tile_raw(tile_x: int, tile_y: int, session: Session = None) \
+def get_coverage_tile_raw(tile_x: int, tile_y: int, session: Session = None) \
         -> Tuple[GroundMetadataTile_pb2.GroundMetadataTile, int]:
     headers = _create_coverage_tile_request_headers(tile_x, tile_y)
     requester = session if session else requests
