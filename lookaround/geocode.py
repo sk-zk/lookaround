@@ -1,5 +1,6 @@
 from typing import List
 
+from flask import jsonify
 from requests import Session
 
 from .ticket import make_ticket_request
@@ -27,10 +28,16 @@ def _build_pb_request(lat: float, lon: float, display_languages: List[str]):
     return pr
 
 
-def reverse_geocode(lat: float, lon: float, display_language: List[str], session: Session = None):
+def reverse_geocode(lat: float, lon: float, display_language: List[str], session: Session = None) -> dict:
     pb_request = _build_pb_request(lat, lon, display_language)
     pb_response = make_ticket_request(pb_request.SerializeToString(), session)
     response = PlaceResponse_pb2.PlaceResponse()
     response.ParseFromString(pb_response)
     address = response.maps_result.place.component[0].value[0].address_object.address_object.place.address
-    return list(address.formatted_address)
+    return {
+        "formatted": list(address.formatted_address),
+        "city": address.address_components.locality,
+        "country": address.address_components.country,
+        "country_code": address.address_components.country_code,
+        "administrative_area": address.address_components.administrative_area,
+    }
