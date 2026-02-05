@@ -1,0 +1,157 @@
+syntax = "proto3";
+package streetlevel;
+
+message Resources {
+  repeated TileSet tile_set = 2;
+  // don't care about the rest of this
+}
+
+message TileSet {
+  string base_url = 1;
+  string multi_tile_url = 2;
+  TileSetStyle style = 3;
+  repeated TileSetVersion valid_version = 5;
+  int32 scale = 6;
+  int32 size = 7;
+  string localization_url = 9;
+  repeated Language supported_language = 10;
+  int32 multi_tile_url_uses_status_codes = 11;
+  TileSetUpdateBehavior update_behavior = 12;
+  repeated CountryRegionTuple country_region_allowlist = 13;
+  ChecksumType checksum_type = 14;
+  uint32 data_set = 15;
+  RequestStyle request_style = 16;
+  bool use_auth_proxy = 17;
+  bool supports_multipath_tcp = 18;
+  uint32 alternative_multipath_tcp_port = 19;
+  string device_sku_allowlist = 20;
+}
+
+message CountryRegionTuple {
+  string country_code = 1;
+  string region = 2;
+}
+
+message Language {
+  int32 identifier = 1;
+  repeated string language = 2;
+}
+
+message TileSetVersion {
+  int32 identifier = 1;
+  repeated TileSetRegion available_tiles = 2;
+  int32 time_to_live_seconds = 3;
+  repeated GenericTile generic_tiles = 4;
+  int32 supported_languages_version = 5;
+}
+
+message TileSetRegion {
+  uint32 unknown1 = 1;
+  uint32 unknown2 = 2;
+  uint32 unknown3 = 3;
+  uint32 unknown4 = 4;
+  uint32 min_zoom = 5;
+  uint32 max_zoom = 6;
+}
+
+message GenericTile {
+  uint32 unknown1 = 1;
+  uint32 unknown2 = 2;
+  uint32 unknown3 = 3;
+}
+
+enum RequestStyle {
+  REQUEST_STYLE_LEGACY = 0;
+  REQUEST_STYLE_HEADER_PARAMS_VERSION_BASED_HMAC_AUTH = 1;
+}
+
+enum TileSetUpdateBehavior {
+  TILE_UPDATE_BEHAVIOR_FLUSH = 0;
+  TILE_UPDATE_BEHAVIOR_ETAG = 1;
+}
+
+enum ChecksumType {
+  CHECKSUM_TYPE_NONE = 0;
+  CHECKSUM_TYPE_APPEND_MD5 = 1;
+}
+
+enum TileSetStyle {
+  RASTER_STANDARD = 0;
+  VECTOR_STANDARD = 1;
+  VECTOR_TRAFFIC_SEGMENTS_FOR_RASTER = 2;
+  VECTOR_TRAFFIC_INCIDENTS_FOR_RASTER = 3;
+  VECTOR_TRAFFIC_SEGMENTS_AND_INCIDENTS_FOR_RASTER = 4;
+  RASTER_STANDARD_BACKGROUND = 5;
+  RASTER_HYBRID = 6;
+  RASTER_SATELLITE = 7;
+  RASTER_TERRAIN = 8;
+  VECTOR_BUILDINGS = 11;
+  VECTOR_TRAFFIC = 12;
+  VECTOR_POI = 13;
+  SPUTNIK_METADATA = 14;
+  SPUTNIK_C3M = 15;
+  SPUTNIK_DSM = 16;
+  SPUTNIK_DSM_GLOBAL = 17;
+  VECTOR_REALISTIC = 18;
+  VECTOR_LEGACY_REALISTIC = 19;
+  VECTOR_ROADS = 20;
+  RASTER_VEGETATION = 21;
+  VECTOR_TRAFFIC_SKELETON = 22;
+  RASTER_COASTLINE_MASK = 23;
+  RASTER_HILLSHADE = 24;
+  VECTOR_TRAFFIC_WITH_GREEN = 25;
+  VECTOR_TRAFFIC_STATIC = 26;
+  RASTER_COASTLINE_DROP_MASK = 27;
+  VECTOR_TRAFFIC_SKELETON_WITH_HISTORICAL = 28;
+  VECTOR_SPEED_PROFILES = 29;
+  VECTOR_VENUES = 30;
+  RASTER_DOWN_SAMPLED = 31;
+  RASTER_COLOR_BALANCED = 32;
+  RASTER_SATELLITE_NIGHT = 33;
+  SPUTNIK_VECTOR_BORDER = 34;
+  RASTER_SATELLITE_DIGITIZE = 35;
+  RASTER_HILLSHADE_PARKS = 36;
+  VECTOR_TRANSIT = 37;
+  RASTER_STANDARD_BASE = 38;
+  RASTER_STANDARD_LABELS = 39;
+  RASTER_HYBRID_ROADS = 40;
+  RASTER_HYBRID_LABELS = 41;
+  FLYOVER_C3M_MESH = 42;
+  FLYOVER_C3M_JPEG_TEXTURE = 43;
+  FLYOVER_C3M_ASTC_TEXTURE = 44;
+  RASTER_SATELLITE_ASTC = 45;
+  RASTER_HYBRID_ROADS_AND_LABELS = 46;
+  VECTOR_TRANSIT_SELECTION = 47;
+  VECTOR_COVERAGE = 48;
+  FLYOVER_METADATA = 52;
+  VECTOR_ROAD_NETWORK = 53;
+  VECTOR_LAND_COVER = 54;
+  VECTOR_DEBUG = 55;
+  VECTOR_STREET_POI = 56;
+  MUNIN_METADATA = 57;
+  VECTOR_SPR_MERCATOR = 58;
+  VECTOR_SPR_MODELS = 59;
+  VECTOR_SPR_MATERIALS = 60;
+  VECTOR_SPR_METADATA = 61;
+  VECTOR_TRACKS = 62;
+  VECTOR_RESERVED_2 = 63;
+  VECTOR_STREET_LANDMARKS = 64;
+  COARSE_LOCATION_POLYGONS = 65;
+  VECTOR_SPR_ROADS = 66;
+  VECTOR_SPR_STANDARD = 67;
+  VECTOR_POI_V2 = 68;
+  VECTOR_POLYGON_SELECTION = 69;
+  VL_METADATA = 70;
+  VL_DATA = 71;
+  PROACTIVE_APP_CLIP = 72;
+  VECTOR_BUILDINGS_V2 = 73;
+  POI_BUSYNESS = 74;
+  POI_DP_BUSYNESS = 75;
+  SMART_INTERFACE_SELECTION = 76;
+  VECTOR_ASSETS = 77;
+  SPR_ASSET_METADATA = 78;
+  VECTOR_SPR_POLAR = 79;
+  SMART_DATA_MODE = 80;
+  CELLULAR_PERFORMANCE_SCORE = 81;
+  VECTOR_SPR_MODELS_OCCLUSION = 82;
+}
