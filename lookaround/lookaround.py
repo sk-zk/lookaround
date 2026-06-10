@@ -6,9 +6,10 @@ from typing import List, Tuple
 import aiohttp
 from aiohttp import ClientSession
 
-from lookaround.proto import GroundMetadataTile_pb2
+from lookaround.proto import GroundMetadataTile_pb2, Resources_pb2
 from .auth import Authenticator
 from .panorama import LookaroundPanorama, CoverageTile
+from .ticket import deserialize_ticket_response
 from . import geo
 
 COVERAGE_TILE_ENDPOINT = "https://gspe76-ssl.ls.apple.com/api/tile?"
@@ -195,3 +196,12 @@ def get_m_file(panoid, build_id, zoom, auth, session=None):
         return response.content
     else:
         raise Exception(str(response))
+
+
+def get_resource_manifest() -> Resources_pb2.Resources():
+    url = "http://gspe35-ssl.ls.apple.com/geo_manifest/dynamic/config?application=&application_version=&country_code=&hardware=&os=osx&os_build=&os_version=100.0.0"
+    response = requests.get(url)
+    ticket = deserialize_ticket_response(response.content)
+    resources = Resources_pb2.Resources()
+    resources.ParseFromString(ticket.payload)
+    return resources
