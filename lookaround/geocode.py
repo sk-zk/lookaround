@@ -10,7 +10,7 @@ from lookaround.proto import PlaceRequest_pb2, PlaceResponse_pb2, Shared_pb2
 def _build_pb_request(lat: float, lon: float, display_languages: List[str]):
     pr = PlaceRequest_pb2.PlaceRequest()
 
-    pr.display_language.extend(display_languages)
+    pr.display_language.extend([display_languages])
     # this must be set to get maps_result rather than legacy_place_result
     pr.client_metadata.supported_maps_result_type.append(Shared_pb2.MapsResultType.MAPS_RESULT_TYPE_PLACE)
 
