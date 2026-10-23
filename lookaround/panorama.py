@@ -73,3 +73,4 @@ class CoverageTile:
     y: int
     panos: List[LookaroundPanorama]
     last_modified: datetime
+    etag: int

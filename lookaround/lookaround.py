@@ -6,7 +6,7 @@ from typing import List, Tuple
 import aiohttp
 from aiohttp import ClientSession
 
-from lookaround.proto import GroundMetadataTile_pb2, Resources_pb2
+from .proto import GroundMetadataTile_pb2, Resources_pb2
 from .auth import Authenticator
 from .panorama import LookaroundPanorama, CoverageTile
 from .ticket import deserialize_ticket_response
@@ -28,12 +28,13 @@ async def get_coverage_tile_by_latlon_async(lat: float, lon: float, session: Cli
 
 
 def get_coverage_tile(tile_x: int, tile_y: int, session: Session = None) -> CoverageTile:
-    tile, etag = get_coverage_tile_raw(tile_x, tile_y, session=session)
-    etag = etag[1:-1]
-    return CoverageTile(tile_x,
-                        tile_y,
-                        _get_panos_from_coverage_tile(tile, tile_x, tile_y),
-                        datetime.fromtimestamp(int(etag)))
+    content, etag = get_coverage_tile_raw(tile_x, tile_y, session=session)
+    tile = parse_coverage_tile_response(content)
+    if tile:
+        panos = get_panos_from_coverage_tile(tile, tile_x, tile_y)
+    else:
+        panos = None
+    return CoverageTile(tile_x, tile_y, panos, datetime.fromtimestamp(etag), etag)
 
 
 async def get_coverage_tile_async(tile_x: int, tile_y: int, session: ClientSession = None) -> CoverageTile:
@@ -41,11 +42,12 @@ async def get_coverage_tile_async(tile_x: int, tile_y: int, session: ClientSessi
     etag = etag[1:-1]
     return CoverageTile(tile_x,
                         tile_y,
-                        _get_panos_from_coverage_tile(tile, tile_x, tile_y),
-                        datetime.fromtimestamp(int(etag)))
+                        get_panos_from_coverage_tile(tile, tile_x, tile_y),
+                        datetime.fromtimestamp(etag),
+                        etag)
 
 
-def _get_panos_from_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTile, tile_x: int, tile_y: int) \
+def get_panos_from_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTile, tile_x: int, tile_y: int) \
         -> List[LookaroundPanorama]:
     panos = []
     for pano in tile.pano:
@@ -68,7 +70,6 @@ def _get_panos_from_coverage_tile(tile: GroundMetadataTile_pb2.GroundMetadataTil
             raw_altitude=pano.tile_position.altitude,
             tile=(tile_x, tile_y, 17),
         )
-        # pano_obj.dbg = (pano.tile_position.yaw, pano.tile_position.pitch, pano.tile_position.roll)
         panos.append(pano_obj)
     return panos
 
@@ -78,7 +79,8 @@ def get_coverage_tile_raw(tile_x: int, tile_y: int, session: Session = None) \
     headers = _create_coverage_tile_request_headers(tile_x, tile_y)
     requester = session if session else requests
     response = requester.get(COVERAGE_TILE_ENDPOINT, headers=headers)
-    return _parse_coverage_tile_response(response.content), response.headers["ETag"]
+    etag = int(response.headers["ETag"][1:-1])
+    return response.content, etag
 
 
 async def _get_coverage_tile_raw_async(tile_x: int, tile_y: int, session: ClientSession = None) \
@@ -90,7 +92,7 @@ async def _get_coverage_tile_raw_async(tile_x: int, tile_y: int, session: Client
     headers = _create_coverage_tile_request_headers(tile_x, tile_y)
     async with session.get(COVERAGE_TILE_ENDPOINT, headers=headers) as response:
         content = await response.read()
-        return _parse_coverage_tile_response(content)
+        return parse_coverage_tile_response(content)
 
 
 def _create_coverage_tile_request_headers(tile_x: int, tile_y: int) -> dict:
@@ -103,7 +105,7 @@ def _create_coverage_tile_request_headers(tile_x: int, tile_y: int) -> dict:
     }
 
 
-def _parse_coverage_tile_response(content: bytes) -> GroundMetadataTile_pb2.GroundMetadataTile:
+def parse_coverage_tile_response(content: bytes) -> GroundMetadataTile_pb2.GroundMetadataTile:
     tile = GroundMetadataTile_pb2.GroundMetadataTile()
     tile.ParseFromString(content)
     return tile
@@ -119,23 +121,6 @@ def get_pano_face(panoid: int, build_id: int, face: int, zoom: int,
         return response.content
     else:
         response.raise_for_status()
-
-
-# Tried to get this to work, but I'm out of ideas. Just 403s every time.
-# The URL is correct, the headers aren't the issue, and I'm out of ideas at this point.
-"""
-async def get_pano_face_async(panoid: int, region_id: int, face: int, zoom: int,
-                               auth: Authenticator, session: ClientSession = None) -> bytes:
-    if session is None:
-        async with aiohttp.ClientSession() as session:
-            return await get_pano_face_async(panoid, region_id, face, zoom, auth, session)
-
-    url = _build_pano_face_url(panoid, region_id, face, zoom, auth)
-    print(url)
-    async with session.get(url) as response:
-        content = await response.read()
-        return content
-"""
 
 
 def build_pano_face_url(panoid: int, build_id: int, face: int, zoom: int, auth: Authenticator) -> str:
