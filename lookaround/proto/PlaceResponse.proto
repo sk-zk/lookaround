@@ -369,7 +369,9 @@ message PlaceResponse {
     string name_2 = 3;
     string markup_name = 4;
     MarkupAddressComponents markup_address_components = 5;
-    string unknown14 = 7;
+    // Sometimes it's a string, sometimes it's a message?
+    // Anyway, I don't need it, so I'm uncommenting it for now
+    // string unknown14 = 7;
     Unknown15 unknown15 = 100;
   }
 
@@ -380,7 +382,7 @@ message PlaceResponse {
 
   message AddressComponents {
     string country = 1;
-    string country_code = 2; //  ISO 3166 country code
+    string country_code = 2; // ISO 3166 country code
     string administrative_area = 3;
     string administrative_area_code = 4; // ISO 3166 region code
     string county = 5;
